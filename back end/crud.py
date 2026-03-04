@@ -114,13 +114,39 @@ def read_events():
 
     return event_list
 
-@app.route('/registrations',methods=["GET"])
+@app.route('/registrations',methods=["GET"]) #Jamie
 def read_registration():
     '''
     RULES:
     query will show the registered members for one event
     '''
-    pass 
+    request_data = request.get_json()
+    event = request_data['event_id'] 
+
+    #getting members attending this event
+    query = f'select member_id from registration where event_id={event} ({event})'
+    members_attending = execute_read_query(conn,query)
+
+    #getting member list
+    query = 'select * from member'
+    members = execute_read_query(conn,query)
+
+    #blank list to put in names
+    list = []
+
+    #match members attending to all members list
+    for registered in members_attending:
+        for a_member in members:
+            if registered["member_id"] == a_member["id"]:
+                id = a_member['id']
+                name = a_member['name']
+                title = a_member['title']
+                level = a_member['level']
+                line = f'{id}: {name} | {title} | {level} ({id},"{name}","{title}","{level}")'
+                list.append(line)
+    
+    return list
+
 
 
 #####################################################
