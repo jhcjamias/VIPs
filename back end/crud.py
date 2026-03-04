@@ -91,6 +91,10 @@ def read_members():
         name = member['name']
         title = member['title']
         level = member['level']
+        line = f'{id}: {name} | {title} | {level} ({id},"{name}","{title}","{level}")'
+        member_list.append(line)
+    
+    return member_list
         
 
 @app.route('/events',methods=["GET"])
@@ -116,8 +120,8 @@ def read_registration():
 def update_member():
     pass 
 
-@app.route('/',methods=["PATCH"])
-def update_member():
+@app.route('/event',methods=["PATCH"])
+def update_event():
     pass 
 
 @app.route('/registration',methods=["PATCH"])
@@ -142,3 +146,6 @@ def delete_event():
 @app.route('/registration',methods=["DELETE"])
 def delete_registration():
     pass 
+
+
+app.run()
