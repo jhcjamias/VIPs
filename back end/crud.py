@@ -97,9 +97,22 @@ def read_members():
     return member_list
         
 
-@app.route('/events',methods=["GET"])
+@app.route('/events',methods=["GET"]) #Jamie 
 def read_events():
-    pass 
+
+    events =  execute_read_query(conn,'select * from event')
+    event_list = []
+
+    for event in events:
+        id = event['id']
+        name = event['name']
+        capacity = event['capacity']
+        level = event['level']
+        date = event['date']
+        line = f'{id}: {name} | {capacity} | {level} | {date} ({id},"{name}","{capacity}","{level}","{date}")'
+        event_list.append(line)
+
+    return event_list
 
 @app.route('/registrations',methods=["GET"])
 def read_registration():
