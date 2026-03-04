@@ -82,7 +82,16 @@ def add_registration():
 @app.route('/members',methods=["GET"]) #Jamie
 def read_members():
     #get list of members 
-    members =  []
+    members =  execute_read_query(conn, 'select * from member')
+
+    member_list = []
+
+    for member in members:
+        id = member['id']
+        name = member['name']
+        title = member['title']
+        level = member['level']
+        
 
 @app.route('/events',methods=["GET"])
 def read_events():
