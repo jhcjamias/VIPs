@@ -57,6 +57,7 @@ def home():
 #Calvin - Added function to add a new member to the Member table in the database
 @app.route('/member',methods=["POST"])
 def add_member():
+    cursor = conn.cursor(dictionary=True)
     request_data = request.get_json()
 
     newName = request_data['name']
@@ -65,7 +66,9 @@ def add_member():
     newLevel = request_data['level']
 
     query = "INSERT INTO member (name, details, title, level) VALUES (%s, %s, %s, %s)"
-    execute_query(conn, query, (newName, newDetails, newTitle, newLevel))
+    #cursor.execute(query, (newName, newDetails, newTitle, newLevel))
+    #conn.commit()
+    execute_query(conn,query,(newName, newDetails, newTitle, newLevel))
     return jsonify({'message': 'Member added successfully'})
 
 

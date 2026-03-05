@@ -16,10 +16,10 @@ def create_connection(hostname, username, userpw, database):
     return connection # Return the connection object, which can be used to interact with the database
 
 
-def execute_query(connection, query):
+def execute_query(connection, query,var=None):
     cursor = connection.cursor() #this is empty because we are not getting anything back
     try:
-        cursor.execute(query)
+        cursor.execute(query,var)
         connection.commit() #commit the transaction to save changes to the database
         print("Query executed successfully")
     except Error as e:
