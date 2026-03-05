@@ -157,7 +157,45 @@ def read_registration():
 
 @app.route('/member',methods=["PATCH"])
 def update_member():
-    pass 
+    #test body in Postman
+    request_data =  request.get_json() 
+    id = request_data['id']
+
+    #update only the name
+    if 'name' in request_data:
+        new_name = request_data['name']
+        query = f'''update member 
+        set name = {new_name}
+        where id = {id};
+        ("{new_name}",{id})'''
+        execute_query(conn,query)
+
+    #update only the details
+    if 'details' in request_data:
+        new_details = request_data['details']
+        query = f'''update member 
+        set details = {new_details}
+        where id = {id};
+        ("{new_details}",{id})'''
+        execute_query(conn,query)
+
+    #update only the title
+    if 'title' in request_data:
+        new_title = request_data['title']
+        query = f'''update member 
+        set title = {new_title}
+        where id = {id};
+        ("{new_title}",{id})'''
+        execute_query(conn,query)
+
+    #update only the level 
+    if 'level' in request_data:
+        new_level = request_data['level']
+        query = f'''update member 
+        set level = {new_level}
+        where id = {id};
+        ("{new_level}",{id})'''
+        execute_query(conn,query)
 
 @app.route('/event',methods=["PATCH"])
 def update_event():
