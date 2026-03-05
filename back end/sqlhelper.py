@@ -26,11 +26,11 @@ def execute_query(connection, query,var=None):
         print(f"Error {e} occured")
 
 
-def execute_read_query(connection, query):
+def execute_read_query(connection, query,var=None):
     cursor = connection.cursor(dictionary=True)
     result = None
     try:
-        cursor.execute(query)
+        cursor.execute(query,var)
         result = cursor.fetchall() #fetch all results from the query and return them as a list of dictionaries
         return result
     except Error as e:
