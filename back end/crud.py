@@ -155,7 +155,7 @@ def read_registration():
 #                                                   #
 #####################################################
 
-@app.route('/member',methods=["PATCH"])
+@app.route('/member',methods=["PATCH"]) #Jamie
 def update_member():
     #test body in Postman
     request_data =  request.get_json() 
@@ -197,9 +197,53 @@ def update_member():
         ("{new_level}",{id})'''
         execute_query(conn,query)
 
-@app.route('/event',methods=["PATCH"])
+@app.route('/event',methods=["PATCH"]) #Jamie
 def update_event():
-    pass 
+    #test body in Postman
+    request_data =  request.get_json() 
+    id = request_data['id']
+
+    #update only the name
+    if 'name' in request_data:
+        new_name = request_data['name']
+        query = f'''update event 
+        set name = {new_name}
+        where id = {id};
+        ("{new_name}",{id})'''
+        execute_query(conn,query)
+
+    #update only the capacity
+    if 'capacity' in request_data:
+        new_capacity = request_data['capacity']
+
+        #check if new capacity < current number of members attending
+        query = f'select count(id)'
+        num_attending = 0
+
+
+        query = f'''update event 
+        set capacity = {new_capacity}
+        where id = {id};
+        ("{new_capacity}",{id})'''
+        execute_query(conn,query)
+
+    #update only the title
+    if 'title' in request_data:
+        new_title = request_data['title']
+        query = f'''update member 
+        set title = {new_title}
+        where id = {id};
+        ("{new_title}",{id})'''
+        execute_query(conn,query)
+
+    #update only the level 
+    if 'level' in request_data:
+        new_level = request_data['level']
+        query = f'''update member 
+        set level = {new_level}
+        where id = {id};
+        ("{new_level}",{id})'''
+        execute_query(conn,query) 
 
 @app.route('/registration',methods=["PATCH"])
 def update_registration():
