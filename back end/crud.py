@@ -143,7 +143,7 @@ def add_registration():
         return jsonify({'message': "Member's level does not meet the requirements to register for this event"})
 
     # Function to read the event capacity
-    capacity_query = "SELECT COUNT(*) AS count FROM event WHERE id = %s"
+    capacity_query = "SELECT capacity AS countFROM event WHERE id = %s"
     event_capacity = execute_read_query(conn, capacity_query, (event_id,))
 
     if not event_capacity:
