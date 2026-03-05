@@ -84,7 +84,7 @@ def add_event():
 
     # Check if an event already exists on this date
     date_query = "SELECT * FROM event WHERE date = %s"
-    existing_event = execute_query(conn, date_query, (newDate,))
+    existing_event = execute_read_query(conn, date_query, (newDate))
 
     if existing_event:
         return jsonify({'message': 'An event already exists on this date'})
