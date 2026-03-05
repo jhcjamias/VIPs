@@ -10,7 +10,6 @@ from sqlhelper import create_connection, execute_query, execute_read_query
 #create a conneciton to MySQL db
 myCreds = creds.Creds() #this is a constructor. tells python how to create an object 
 conn = create_connection(myCreds.conString, myCreds.userName, myCreds.password, myCreds.dbName)
-cursor = conn.cursor(dictionary=True)
 
 #set up application
 app = flask.Flask(__name__)
@@ -58,6 +57,7 @@ def home():
 #Calvin - Edited function to add a new member to the Member table in the database
 @app.route('/member',methods=["POST"])
 def add_member():
+    cursor = conn.cursor(dictionary=True)
     request_data = request.get_json()
 
     newName = request_data['name']
@@ -67,6 +67,7 @@ def add_member():
 
     query = "INSERT INTO member (name, details, title, level) VALUES (%s, %s, %s, %s)"
     cursor.execute(query, (newName, newDetails, newTitle, newLevel))
+    conn.commit()
     return jsonify({'message': 'Member added successfully'})
 
 
