@@ -360,5 +360,3 @@ def delete_registration():
 
 
 app.run()
-
-#TESTING IF THIS WORKS PLEASE WORK PLEASE
