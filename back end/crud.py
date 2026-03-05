@@ -66,8 +66,9 @@ def add_member():
     newLevel = request_data['level']
 
     query = "INSERT INTO member (name, details, title, level) VALUES (%s, %s, %s, %s)"
-    cursor.execute(query, (newName, newDetails, newTitle, newLevel))
-    conn.commit()
+    #cursor.execute(query, (newName, newDetails, newTitle, newLevel))
+    #conn.commit()
+    execute_query(conn,query,(newName, newDetails, newTitle, newLevel))
     return jsonify({'message': 'Member added successfully'})
 
 
