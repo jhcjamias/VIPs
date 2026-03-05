@@ -54,7 +54,7 @@ def home():
 #                                                   #
 #####################################################
 
-#Calvin - Edited function to add a new member to the Member table in the database
+#Calvin - Added function to add a new member to the Member table in the database
 @app.route('/member',methods=["POST"])
 def add_member():
     request_data = request.get_json()
@@ -69,11 +69,11 @@ def add_member():
     return jsonify({'message': 'Member added successfully'})
 
 
-#Calvin - Edited function to add a new event to the Event table in the database
+#Calvin - Added function to add a new event to the Event table in the database
 @app.route('/event',methods=["POST"])
 def add_event():
     request_data = request.get_json()
-     
+    
     newName = request_data['name']
     newCapacity = request_data['capacity']
     newLevel = request_data['level']
@@ -92,7 +92,7 @@ def add_event():
     return jsonify({'message': 'Event added successfully'})
 
 
-#Calvin - Edited function to add a new registration to the Registration table in the database
+#Calvin - Added function to add a new registration to the Registration table in the database
 @app.route('/registration',methods=["POST"])
 def add_registration():
     '''
@@ -346,9 +346,13 @@ def update_registration():
 #                                                   #
 #####################################################
 
+#Calvin - Added function to delete a member from the Member table in the database
 @app.route('/member',methods=["DELETE"])
 def delete_member():
-    pass 
+    request_data = request.get_json()
+    member_id = request_data['id']
+
+
 
 @app.route('/event',methods=["DELETE"])
 def delete_event():
