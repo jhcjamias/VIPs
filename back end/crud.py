@@ -355,6 +355,14 @@ def delete_member():
     request_data = request.get_json()
     member_id = request_data['id']
 
+    #SQL statement queries to delete member from registration and member table
+    registration_query = "DELETE FROM registration WHERE member_id = %s"
+    member_query = "DELETE FROM member WHERE id = %s"
+
+    execute_query(conn, registration_query, (member_id,))
+    execute_query(conn, member_query, (member_id,))
+
+    return jsonify({'message': 'Member deleted successfully'})
 
 
 @app.route('/event',methods=["DELETE"])
