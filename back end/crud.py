@@ -143,7 +143,7 @@ def add_registration():
         return jsonify({'message': "Member's level does not meet the requirements to register for this event"})
 
     # Function to read the event capacity
-    capacity_query = "SELECT COUNT(*) AS count FROM event WHERE id = %s"
+    capacity_query = "SELECT capacity AS count FROM event WHERE id = %s"
     event_capacity = execute_read_query(conn, capacity_query, (event_id,))
 
     if not event_capacity:
@@ -355,6 +355,14 @@ def delete_member():
     request_data = request.get_json()
     member_id = request_data['id']
 
+    #SQL statement queries to delete member from registration and member table
+    registration_query = "DELETE FROM registration WHERE member_id = %s"
+    member_query = "DELETE FROM member WHERE id = %s"
+
+    execute_query(conn, registration_query, (member_id,))
+    execute_query(conn, member_query, (member_id,))
+
+    return jsonify({'message': 'Member deleted successfully'})
 
 
 @app.route('/event',methods=["DELETE"])
