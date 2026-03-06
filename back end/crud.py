@@ -381,7 +381,15 @@ def delete_event():
 
 @app.route('/registration',methods=["DELETE"])
 def delete_registration():
-    pass 
+    request_data = request.get_json()
+    registration_id = request_data['id']
+
+    #SQL statement query to delete registration from registration table
+    registration_query = "DELETE FROM registration WHERE id = %s"
+
+    execute_query(conn, registration_query, (registration_id,))
+
+    return jsonify({'message': 'Registration deleted successfully'}) 
 
 
 app.run()
