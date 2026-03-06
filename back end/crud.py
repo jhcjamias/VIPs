@@ -257,38 +257,38 @@ def update_member():
     #update only the name
     if 'name' in request_data:
         new_name = request_data['name']
-        query = f'''update member 
-        set name = {new_name}
-        where id = {id};
-        ("{new_name}",{id})'''
-        execute_query(conn,query)
+        query = '''update member 
+        set name = %s
+        where id = %s;
+        '''
+        execute_query(conn,query,(new_name,id))
 
     #update only the details
     if 'details' in request_data:
         new_details = request_data['details']
-        query = f'''update member 
-        set details = {new_details}
-        where id = {id};
-        ("{new_details}",{id})'''
-        execute_query(conn,query)
+        query = '''update member 
+        set details = %s
+        where id = %s;
+        '''
+        execute_query(conn,query,(new_details,id))
 
     #update only the title
     if 'title' in request_data:
         new_title = request_data['title']
-        query = f'''update member 
-        set title = {new_title}
-        where id = {id};
-        ("{new_title}",{id})'''
-        execute_query(conn,query)
+        query = '''update member 
+        set title = %s
+        where id = %s;
+        '''
+        execute_query(conn,query,(new_details,id))
 
     #update only the level 
     if 'level' in request_data:
         new_level = request_data['level']
-        query = f'''update member 
-        set level = {new_level}
-        where id = {id};
-        ("{new_level}",{id})'''
-        execute_query(conn,query)
+        query = '''update member 
+        set level = %s
+        where id = %s;
+        '''
+        execute_query(conn,query,(new_level,id))
 
 @app.route('/event',methods=["PATCH"]) #Jamie
 def update_event():
@@ -299,11 +299,11 @@ def update_event():
     #update only the name
     if 'name' in request_data:
         new_name = request_data['name']
-        query = f'''update event 
-        set name = {new_name}
-        where id = {id};
-        ("{new_name}",{id})'''
-        execute_query(conn,query)
+        query = '''update event 
+        set name = %s
+        where id = %s;
+        '''
+        execute_query(conn,query,(new_name,id))
 
     #update only the capacity
     if 'capacity' in request_data:
@@ -314,29 +314,29 @@ def update_event():
         num_attending = 0
 
 
-        query = f'''update event 
-        set capacity = {new_capacity}
-        where id = {id};
-        ("{new_capacity}",{id})'''
-        execute_query(conn,query)
+        query = '''update event 
+        set capacity = %s
+        where id = %s;
+        '''
+        execute_query(conn,query,(new_capacity,id))
 
     #update only the title
     if 'title' in request_data:
         new_title = request_data['title']
-        query = f'''update member 
-        set title = {new_title}
-        where id = {id};
-        ("{new_title}",{id})'''
-        execute_query(conn,query)
+        query = '''update member 
+        set title = %s
+        where id = %s;
+        '''
+        execute_query(conn,query,(new_title,id))
 
     #update only the level 
     if 'level' in request_data:
         new_level = request_data['level']
-        query = f'''update member 
-        set level = {new_level}
-        where id = {id};
-        ("{new_level}",{id})'''
-        execute_query(conn,query) 
+        query = '''update member 
+        set level = %s
+        where id = %s;
+        '''
+        execute_query(conn,query,(new_level,id)) 
 
 @app.route('/registration',methods=["PATCH"])
 def update_registration():
