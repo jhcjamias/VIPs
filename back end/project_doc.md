@@ -15,6 +15,7 @@ Calvin's Contributions:
     - delete_member function
     - delete_event function
     - delete_registration function
+ - created project document
 
 Jamie's Contributions: 
  - added all Read functions:
