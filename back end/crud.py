@@ -184,7 +184,7 @@ def read_members():
         name = member['name']
         title = member['title']
         level = member['level']
-        line = f'{id}: {name} | {title} | {level} ({id},"{name}","{title}","{level}")'
+        line = f'{id}: {name} | {title} | {level}'
         member_list.append(line)
     
     return member_list
@@ -202,10 +202,11 @@ def read_events():
         capacity = event['capacity']
         level = event['level']
         date = event['date']
-        line = f'{id}: {name} | {capacity} | {level} | {date} ({id},"{name}","{capacity}","{level}","{date}")'
+        line = f'{id}: {name} | {capacity} | {level} | {date}'
         event_list.append(line)
 
     return event_list
+
 
 @app.route('/registrations',methods=["GET"]) #Jamie
 def read_registration():
@@ -216,29 +217,21 @@ def read_registration():
     request_data = request.get_json()
     event = request_data['event_id'] 
 
-    #getting members attending this event
-    query = f'select member_id from registration where event_id={event} ({event})'
-    members_attending = execute_read_query(conn,query)
+    #getting member name and level based on event_id. I wanted to do this in one query 
+    query = '''select event_id, member.name, member.level
+    from registration join member on member_id=member.id
+    where event_id=%s;'''
+    members_attending = execute_read_query(conn,query,(event,)) #adding a comma after event makes the returned list a tuple
 
-    #getting member list
-    query = 'select * from member'
-    members = execute_read_query(conn,query)
-
-    #blank list to put in names
     list = []
 
-    #match members attending to all members list
-    for registered in members_attending:
-        for a_member in members:
-            if registered["member_id"] == a_member["id"]:
-                id = a_member['id']
-                name = a_member['name']
-                title = a_member['title']
-                level = a_member['level']
-                line = f'{id}: {name} | {title} | {level} ({id},"{name}","{title}","{level}")'
-                list.append(line)
-    
-    return list
+    for member in members_attending:
+        name = member['name']
+        level = member['level']
+        line = f'{name} | {level}'
+        list.append(line)
+
+    return jsonify(f'registration list for event {event}',list)
 
 
 
@@ -289,6 +282,7 @@ def update_member():
         where id = %s;
         '''
         execute_query(conn,query,(new_level,id))
+
 
 @app.route('/event',methods=["PATCH"]) #Jamie
 def update_event():
