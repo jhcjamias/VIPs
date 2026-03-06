@@ -379,6 +379,7 @@ def delete_event():
 
     return jsonify({'message': 'Event deleted successfully'})
 
+
 @app.route('/registration',methods=["DELETE"])
 def delete_registration():
     request_data = request.get_json()
