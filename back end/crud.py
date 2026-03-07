@@ -318,6 +318,7 @@ def update_event():
     #test body in Postman
     request_data =  request.get_json() 
     id = request_data['event_id']
+    date = request_data['date'] #ideally, this would be today's date 
 
     #update only the name
     if 'name' in request_data:
@@ -343,31 +344,57 @@ def update_event():
         if new_capacity < num_attending:
             return f"there are {num_attending-new_capacity} more people attending than specified capacity. try again"
 
-        #all checks passed
+        #all capacity checks passed
         query = '''update event 
         set capacity = %s
         where id = %s;
         '''
         execute_query(conn,query,(new_capacity,id))
 
-    #update only the title
-    if 'title' in request_data:
-        new_title = request_data['title']
-        query = '''update member 
-        set title = %s
-        where id = %s;
-        '''
-        execute_query(conn,query,(new_title,id))
-
     #update only the level 
     if 'level' in request_data:
         new_level = request_data['level']
-        query = '''update member 
+
+        levels = {
+            'bronze':1,
+            'silver':2,
+            'gold':3
+        }
+
+        #look at the levels of the members attending the event
+        query = '''select member_id, member.level
+        from registration
+        join member on member_id=member.id
+        where event_id=%s;'''
+        attending = execute_read_query(conn,query,(id,))
+
+        #see if there are any members who cannot attend the event if the level became higher  
+        too_high = []
+        for person in attending:
+            if levels[person['level']] > levels[new_level]:
+                too_high.append(person['member_id'])
+        
+        if len(too_high) != 0: 
+            return f"there are {len(too_high)} members at a lower level than the new level. try again"
+
+        #all level checks passed 
+        query = '''update event 
         set level = %s
         where id = %s;
         '''
         execute_query(conn,query,(new_level,id)) 
-
+    
+    #update only the date 
+    '''
+    if 'date' in request_data:
+        new_date = request_data['date']
+        query = ''update event 
+        set date = %s
+        where id = %s;
+        ''
+        execute_query(conn,query,(new_date,id)) '''
+    
+    return request_data
     return "event updated"
 
 @app.route('/registration',methods=["PATCH"])
