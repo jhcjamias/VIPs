@@ -390,11 +390,30 @@ def delete_member():
 
 @app.route('/event',methods=["DELETE"])
 def delete_event():
-    pass 
+    request_data = request.get_json()
+    event_id = request_data['id']
+
+    #SQL statement queries to delete event from registration and event table
+    registration_query = "DELETE FROM registration WHERE event_id = %s"
+    event_query = "DELETE FROM event WHERE id = %s"
+
+    execute_query(conn, registration_query, (event_id,))
+    execute_query(conn, event_query, (event_id,))
+
+    return jsonify({'message': 'Event deleted successfully'})
+
 
 @app.route('/registration',methods=["DELETE"])
 def delete_registration():
-    pass 
+    request_data = request.get_json()
+    registration_id = request_data['id']
+
+    #SQL statement query to delete registration from registration table
+    registration_query = "DELETE FROM registration WHERE id = %s"
+
+    execute_query(conn, registration_query, (registration_id,))
+
+    return jsonify({'message': 'Registration deleted successfully'}) 
 
 
 app.run()
