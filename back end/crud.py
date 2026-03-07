@@ -245,7 +245,7 @@ def read_registration():
 def update_member():
     #test body in Postman
     request_data =  request.get_json() 
-    id = request_data['id'] 
+    id = request_data['member_id'] 
     date = request_data['date'] #theoretically would reference today's date or the date the update is being made 
 
     #update only the name
@@ -317,7 +317,8 @@ def update_member():
 def update_event():
     #test body in Postman
     request_data =  request.get_json() 
-    id = request_data['id']
+    id = request_data['event_id']
+    date = request_data['current_date'] #ideally, this would be today's date 
 
     #update only the name
     if 'name' in request_data:
@@ -332,38 +333,84 @@ def update_event():
     if 'capacity' in request_data:
         new_capacity = request_data['capacity']
 
-        #check if new capacity < current number of members attending
-        query = f'select count(id)'
-        num_attending = 0
+        #pull number of members registered for event
+        query = '''select count(*)
+        from registration
+        where event_id=%s;'''
+        attending = execute_read_query(conn,query,(id,))
+        num_attending = attending[0]['count(*)']
 
+        #check if new capacity < current number of members attending 
+        if new_capacity < num_attending:
+            return f"there are {num_attending-new_capacity} more people attending than specified capacity. try again"
 
+        #all capacity checks passed
         query = '''update event 
         set capacity = %s
         where id = %s;
         '''
         execute_query(conn,query,(new_capacity,id))
 
-    #update only the title
-    if 'title' in request_data:
-        new_title = request_data['title']
-        query = '''update member 
-        set title = %s
-        where id = %s;
-        '''
-        execute_query(conn,query,(new_title,id))
-
     #update only the level 
     if 'level' in request_data:
         new_level = request_data['level']
-        query = '''update member 
+
+        levels = {
+            'bronze':1,
+            'silver':2,
+            'gold':3
+        }
+
+        #look at the levels of the members attending the event
+        query = '''select member_id, member.level
+        from registration
+        join member on member_id=member.id
+        where event_id=%s;'''
+        attending = execute_read_query(conn,query,(id,))
+
+        #see if there are any members who cannot attend the event if the level became higher  
+        too_high = []
+        for person in attending:
+            if levels[person['level']] < levels[new_level]:
+                too_high.append(person['member_id'])
+        
+        if len(too_high) != 0: 
+            return f"there are {len(too_high)} members at a higher level than the new level. try again"
+
+        #all level checks passed 
+        query = '''update event 
         set level = %s
         where id = %s;
         '''
         execute_query(conn,query,(new_level,id)) 
+    
+    #update only the date 
+    if 'date' in request_data:
+        new_date = request_data['date']
 
-@app.route('/registration',methods=["PATCH"])
+        #if date has passed, cannot change it
+        if new_date < date:
+            return "date has already passed"
+        
+        #date checks passed 
+        query = '''update event 
+        set date = %s
+        where id = %s;
+        '''
+        execute_query(conn,query,(new_date,id))
+    
+    return "event updated"
+
+
+@app.route('/registration',methods=["PATCH"]) #Jamie
 def update_registration():
-    pass 
+    '''
+    This is a redundant function
+    If user wanted to change the event or member of an existing registration,
+    it would be the same as deleting the registration, then creating a new registration
+    '''
+    pass
+
 
 
 #####################################################
