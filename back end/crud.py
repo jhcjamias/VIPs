@@ -245,7 +245,7 @@ def read_registration():
 def update_member():
     #test body in Postman
     request_data =  request.get_json() 
-    id = request_data['id'] 
+    id = request_data['member_id'] 
     date = request_data['date'] #theoretically would reference today's date or the date the update is being made 
 
     #update only the name
@@ -317,7 +317,7 @@ def update_member():
 def update_event():
     #test body in Postman
     request_data =  request.get_json() 
-    id = request_data['id']
+    id = request_data['event_id']
 
     #update only the name
     if 'name' in request_data:
@@ -332,11 +332,18 @@ def update_event():
     if 'capacity' in request_data:
         new_capacity = request_data['capacity']
 
-        #check if new capacity < current number of members attending
-        query = f'select count(id)'
-        num_attending = 0
+        #pull number of members registered for event
+        query = '''select count(*)
+        from registration
+        where event_id=%s;'''
+        attending = execute_read_query(conn,query,(id,))
+        num_attending = attending[0]['count(*)']
 
+        #check if new capacity < current number of members attending 
+        if new_capacity < num_attending:
+            return f"there are {num_attending-new_capacity} more people attending than specified capacity. try again"
 
+        #all checks passed
         query = '''update event 
         set capacity = %s
         where id = %s;
@@ -360,6 +367,8 @@ def update_event():
         where id = %s;
         '''
         execute_query(conn,query,(new_level,id)) 
+
+    return "event updated"
 
 @app.route('/registration',methods=["PATCH"])
 def update_registration():
