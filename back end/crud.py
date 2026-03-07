@@ -401,42 +401,15 @@ def update_event():
     
     return "event updated"
 
+
 @app.route('/registration',methods=["PATCH"]) #Jamie
 def update_registration():
-    request_data =  request.get_json() 
-    registration_id = request_data['registration_id']
-    new_event = request_data['event_id'] 
-    new_member = request_data['member_id']
-
-    #see if member is already attending new event
-    query = '''select id as "r_id", event_id, member_id 
-    from registration 
-    where member_id=%s and event_id=%s;'''
-    already_attending = execute_read_query(conn,query,(new_member,new_event))
-    if len(already_attending) != 0:
-        return "member is already attending event"
-    
-    #see current number of attendees 
-    query = '''select count(*)
-    from registration 
-    where event_id=%s;'''
-    attendees = execute_read_query(conn,query,(new_event,))
-    num_attending = attendees[0]['count(*)']
-
-    #see capacity of event
-    query = '''select capacity 
-    from event
-    where id=%s;'''
-    capacity = execute_read_query(conn,query,(new_event,))
-
-    #compare number attending to capacity 
-    if num_attending == capacity[0]['capacity']:
-        return "event is at full capacity"
-    
-    
-
-    return "event not yet full"
-    
+    '''
+    This is a redundant function
+    If user wanted to change the event or member of an existing registration,
+    it would be the same as deleting the registration, then creating a new registration
+    '''
+    pass
 
 
 
