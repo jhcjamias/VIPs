@@ -318,7 +318,7 @@ def update_event():
     #test body in Postman
     request_data =  request.get_json() 
     id = request_data['event_id']
-    date = request_data['date'] #ideally, this would be today's date 
+    date = request_data['current_date'] #ideally, this would be today's date 
 
     #update only the name
     if 'name' in request_data:
@@ -371,11 +371,11 @@ def update_event():
         #see if there are any members who cannot attend the event if the level became higher  
         too_high = []
         for person in attending:
-            if levels[person['level']] > levels[new_level]:
+            if levels[person['level']] < levels[new_level]:
                 too_high.append(person['member_id'])
         
         if len(too_high) != 0: 
-            return f"there are {len(too_high)} members at a lower level than the new level. try again"
+            return f"there are {len(too_high)} members at a higher level than the new level. try again"
 
         #all level checks passed 
         query = '''update event 
@@ -385,17 +385,21 @@ def update_event():
         execute_query(conn,query,(new_level,id)) 
     
     #update only the date 
-    '''
     if 'date' in request_data:
         new_date = request_data['date']
-        query = ''update event 
+
+        #if date has passed, cannot change it
+        if new_date < date:
+            return "date has already passed"
+        
+        #date checks passed 
+        query = '''update event 
         set date = %s
         where id = %s;
-        ''
-        execute_query(conn,query,(new_date,id)) '''
+        '''
+        execute_query(conn,query,(new_date,id))
     
-    return request_data
-    return "event updated"
+    return f"{new_date} | {date}"
 
 @app.route('/registration',methods=["PATCH"])
 def update_registration():
