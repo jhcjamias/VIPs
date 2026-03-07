@@ -193,7 +193,7 @@ def read_members():
 @app.route('/events',methods=["GET"]) #Jamie 
 def read_events():
 
-    events =  execute_read_query(conn,'select * from event')
+    events =  execute_read_query(conn,'select * from event order by date')
     event_list = []
 
     for event in events:
