@@ -184,7 +184,7 @@ def read_members():
         name = member['name']
         title = member['title']
         level = member['level']
-        line = f'{id}: {name} | {title} | {level} ({id},"{name}","{title}","{level}")'
+        line = f'{id}: {name} | {title} | {level}'
         member_list.append(line)
     
     return member_list
@@ -193,7 +193,7 @@ def read_members():
 @app.route('/events',methods=["GET"]) #Jamie 
 def read_events():
 
-    events =  execute_read_query(conn,'select * from event')
+    events =  execute_read_query(conn,'select * from event order by date')
     event_list = []
 
     for event in events:
@@ -202,10 +202,11 @@ def read_events():
         capacity = event['capacity']
         level = event['level']
         date = event['date']
-        line = f'{id}: {name} | {capacity} | {level} | {date} ({id},"{name}","{capacity}","{level}","{date}")'
+        line = f'{id}: {name} | {capacity} | {level} | {date}'
         event_list.append(line)
 
     return event_list
+
 
 @app.route('/registrations',methods=["GET"]) #Jamie
 def read_registration():
@@ -216,29 +217,21 @@ def read_registration():
     request_data = request.get_json()
     event = request_data['event_id'] 
 
-    #getting members attending this event
-    query = f'select member_id from registration where event_id={event} ({event})'
-    members_attending = execute_read_query(conn,query)
+    #getting member name and level based on event_id. I wanted to do this in one query 
+    query = '''select event_id, member.name, member.level, member_id
+    from registration join member on member_id=member.id
+    where event_id=%s;'''
+    members_attending = execute_read_query(conn,query,(event,)) #adding a comma after event makes the returned list a tuple
 
-    #getting member list
-    query = 'select * from member'
-    members = execute_read_query(conn,query)
-
-    #blank list to put in names
     list = []
 
-    #match members attending to all members list
-    for registered in members_attending:
-        for a_member in members:
-            if registered["member_id"] == a_member["id"]:
-                id = a_member['id']
-                name = a_member['name']
-                title = a_member['title']
-                level = a_member['level']
-                line = f'{id}: {name} | {title} | {level} ({id},"{name}","{title}","{level}")'
-                list.append(line)
-    
-    return list
+    for member in members_attending:
+        name = member['name']
+        level = member['level']
+        line = f'{member['member_id']}: {name} | {level}'
+        list.append(line)
+
+    return jsonify(f'registration list for event {event}',list)
 
 
 
@@ -252,7 +245,8 @@ def read_registration():
 def update_member():
     #test body in Postman
     request_data =  request.get_json() 
-    id = request_data['id']
+    id = request_data['id'] 
+    date = request_data['date'] #theoretically would reference today's date or the date the update is being made 
 
     #update only the name
     if 'name' in request_data:
@@ -282,13 +276,42 @@ def update_member():
         execute_query(conn,query,(new_details,id))
 
     #update only the level 
+    #if member is registered to an event with a higher tier and the update makes them an invalid member, then an error would show
     if 'level' in request_data:
         new_level = request_data['level']
+
+        #pulling list of member's registered events after specified date 
+        query = '''select registration.id as 'r#', event_id, level
+        from registration
+        join event on event_id=event.id
+        where member_id=%s and event.date>%s;'''
+        members_registered_events = execute_read_query(conn,query,(id,date))
+
+        levels = {
+            'bronze':1,
+            'silver':2,
+            'gold':3
+        }
+
+        #generates list of events that the member could not attend if their level changes
+        too_high_events = []
+        for upcoming_events in members_registered_events:
+            if levels[new_level] < levels[upcoming_events['level']]:
+                too_high_events.append(upcoming_events['event_id'])
+            
+        if len(too_high_events) != 0:
+            return f"""Member {id} cannot change to {new_level} because they have an upcoming event in a higher tier
+            Please remove their name from the following events: {too_high_events}"""
+
+        #all checks passed. member level can change 
         query = '''update member 
         set level = %s
         where id = %s;
         '''
         execute_query(conn,query,(new_level,id))
+
+    return "member updated"
+
 
 @app.route('/event',methods=["PATCH"]) #Jamie
 def update_event():
