@@ -1,0 +1,88 @@
+<%###################################################
+#                                                   #
+#          Modal Pop-Up to Add New Member           #
+#                                                   #
+###################################################%>
+
+<%# Calvin - Added modal pop-up for adding new members %>
+<div id = "addMemberModal" class = "modal">
+    <div class = "modal-content">
+        <form id = "addMemberForm">
+            <label>Member Name:</label>
+            <input type = "text" id = "name" required>
+
+            <label>Details:</label>
+            <input type = "text" id = "details" required>
+
+            <label>Title:</label>
+            <input type = "text" id = "title" required>
+
+            <label>Level:</label>
+            <select id = "level" required>
+                <option value = "bronze">Bronze</option>
+                <option value = "silver">Silver</option>
+                <option value = "gold">Gold</option>
+            </select>
+
+            <button type = "submit">Add Member</button>
+        </form>
+    </div>
+</div>
+
+
+<%###################################################
+#                                                   #
+#           Modal Pop-Up to Edit Member             #
+#                                                   #
+###################################################%>
+
+<%# Calvin - Added modal pop-up for editing and deleting existing members %>
+<div id = "editMemberModal" class = "modal">
+    <div class = "modal-content">
+
+        <%# Edit Member Form Functionality %>
+        <form id = "editMemberForm">
+            <input type = "hidden" id = "editMemberId">
+
+            <label>Member Name:</label>
+            <input type = "text" id = "editName" required>
+
+            <label>Details:</label>
+            <input type = "text" id = "editDetails" required>
+
+            <label>Title:</label>
+            <input type = "text" id = "editTitle" required>
+
+            <label>Level:</label>
+            <select id = "editLevel" required>
+                <option value = "bronze">Bronze</option>
+                <option value = "silver">Silver</option>
+                <option value = "gold">Gold</option>
+            </select>
+
+            <button type = "submit">Save Changes</button>
+
+
+            <%# Delete Member Button Functionality %>
+            <form id = "deleteMemberForm">
+                <input type = "hidden" id = "deleteMemberId">
+                <button type = "button">Delete Member</button>
+            </form>
+        </form>
+    </div>
+</div>
+
+
+<%###################################################
+#                                                   #
+#            Delete Confirmation Modal              #
+#                                                   #
+###################################################%>
+
+<%# Calvin - Added confirmation modal for deleting members %>
+<div id = "deleteConfirmationModal" class = "modal">
+    <div class = "modal-content">
+        <input type = "hidden" id = "confirmDeleteMemberId">
+
+        <button id = "confirmDeleteButton" style = "background-color: red; color: white;">Yes, Delete</button>
+        <button id = "cancelDeleteButton" type = "button">Cancel</button>
