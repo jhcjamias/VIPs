@@ -9,7 +9,44 @@
     <%- include('../partials/navbar'); %>
 </header>
 
+<body>
+    <div class="container">
+        <table class="table table-hover">
+            <!--sticky head goes here-->
+            <thead>
+                <tr>
+                    <th scope="col">S. No.</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Attending/Capacity</th>
+                    <th scope="col">Level</th>
+                    <th scope="col">Date</th>
+                </tr>
+            </thead>
 
+            <!-- EJS will use %. each row equals one event -->
+            <tbody class="table-group-divider">
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Ajay</td>
+                    <td>Patna</td>
+                    <td>20</td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Rahul</td>
+                    <td>Chandigarh</td>
+                    <td>17</td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td>Parush</td>
+                    <td>Kolkata</td>
+                    <td>22</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
 
 
 
