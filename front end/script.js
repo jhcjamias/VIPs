@@ -97,9 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const eventsTableRow = `
                 <tr>
                     <td>Sample Event</td>
-                    <td>Sample Event</td>
-                    <td>Sample Event</td>
-                    <td>Sample Event</td>
+                    <td>Silver</td>
+                    <td>40</td>
+                    <td>9/26/2026</td>
                 </tr>`
             memberEventsTableBody.innerHTML = eventsTableRow
             viewEventsModal.style.display = 'block';
