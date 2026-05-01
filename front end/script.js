@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableDeleteBtn = document.getElementById('tableDeleteBtn');
     const memberCheckboxes = document.querySelectorAll('.member-checkbox');
 
+    const viewEventsModal = document.getElementById('viewEventsModal');
+    const memberEventsTableBody = document.getElementById('memberEventsTableBody');
+
     // Function to clear modal form after closing it out
     function modalClear(modalId, formId) {
         const modal = document.getElementById(modalId);
@@ -81,6 +84,36 @@ document.addEventListener('DOMContentLoaded', () => {
             editMembermodal.style.display = 'none';
         } else if (event.target === deleteMembermodal) {
             deleteMembermodal.style.display = 'none';
+        } else if (event.target === viewEventsModal) {
+            viewEventsModal.style.display = 'none';
         }
+    });
+
+    // Function to open View Member's Events Modal
+    document.querySelectorAll('.view-member-events-btn').forEach(btn => {
+        btn.onclick = () => {
+            memberEventsTableBody.innerHTML = '';
+
+            const eventsTableRow = `
+                <tr>
+                    <td>Sample Event</td>
+                    <td>Sample Event</td>
+                    <td>Sample Event</td>
+                    <td>Sample Event</td>
+                </tr>`
+            memberEventsTableBody.innerHTML = eventsTableRow
+            viewEventsModal.style.display = 'block';
+        };
+    });
+
+    document.getElementById('closeViewEventsBtn').onclick = () => {
+        viewEventsModal.style.display = 'none';
+    };
+
+    window.addEventListener('click', (event) => {
+        if (event.target === viewEventsModal) {
+            viewEventsModal.style.display = 'none';
+        }
+
     });
 });
