@@ -9,6 +9,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableDeleteBtn = document.getElementById('tableDeleteBtn');
     const memberCheckboxes = document.querySelectorAll('.member-checkbox');
 
+    // Function to clear modal form after closing it out
+    function modalClear(modalId, formId) {
+        const modal = document.getElementById(modalId);
+        const form = document.getElementById(formId);
+        // If there is no modal display, the form will reset and clear all fields
+        if (modal) modal.style.display = 'none';
+        if (form) form.reset()
+    }
+    
     // Function to open the Add Member modal
     const addMemberBtn = document.getElementById('addMemberBtn');
     if (addMemberBtn) {
