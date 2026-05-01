@@ -90,7 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Function to open View Member's Events Modal
-    document.querySelectorAll('.view-member-events-btn').forEach(btn => {
+    const viewButtons = document.querySelectorAll('.view-member-events-btn');
+    viewButtons.forEach(btn => {
         btn.onclick = () => {
             memberEventsTableBody.innerHTML = '';
 
@@ -106,9 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     });
 
-    document.getElementById('closeViewEventsBtn').onclick = () => {
-        viewEventsModal.style.display = 'none';
-    };
+    const closeViewBtn = document.getElementById('closeViewEventsBtn');
+    if (closeViewBtn) {
+        closeViewBtn.onclick = () => {
+            viewEventsModal.style.display = 'none';
+        };
+    }
 
     window.addEventListener('click', (event) => {
         if (event.target === viewEventsModal) {
