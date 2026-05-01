@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close modals when clicking outside of them
     window.addEventListener('click', (event) => {
         if (event.target === addMembermodal) {
-            addMembermodal.style.display = 'none';
+            modalClear('addMemberModal', 'addMemberForm');
         } else if (event.target === editMembermodal) {
             editMembermodal.style.display = 'none';
         } else if (event.target === deleteMembermodal) {
