@@ -2,11 +2,14 @@
 var express = require('express');
 var app = express();
 const bodyParser  = require('body-parser');
+const path = require('path');
 
 // required module to make calls to a REST API
 const axios = require('axios');
 
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(express.static(__dirname));
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');

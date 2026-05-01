@@ -4,35 +4,65 @@
 document.addEventListener('DOMContentLoaded', () => {
     const addMembermodal = document.getElementById('addMemberModal');
     const editMembermodal = document.getElementById('editMemberModal');
-    const deleteMembermodal = document.getElementById('deleteMemberModal');
+    const deleteMembermodal = document.getElementById('deleteConfirmationModal');
+
+    const tableDeleteBtn = document.getElementById('tableDeleteBtn');
+    const memberCheckboxes = document.querySelectorAll('.member-checkbox');
 
     // Function to open the Add Member modal
     const addMemberBtn = document.getElementById('addMemberBtn');
-    addMemberBtn.addEventListener('click', () => {
-        addMembermodal.style.display = 'block';
-    });
+    if (addMemberBtn) {
+        addMemberBtn.addEventListener('click', () => {
+            addMembermodal.style.display = 'block';
+        });
+    }
 
     // Function to open the Edit Member modal (when pencil icon is clicked)
     const editButtons = document.querySelectorAll('.edit-member-btn');
-    editButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            editMembermodal.style.display = 'block';
+    if (editButtons) {
+        editButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                editMembermodal.style.display = 'block';
+            });
         });
-    });
+    }
 
     // Function for Delete Member Confirmation modal
     const deleteButtons = document.querySelectorAll('.delete-member-btn');
     if (deleteButtons) {
-        deleteButtons.addEventListener('click', () => {
-            deleteMembermodal.style.display = 'block';
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                deleteMembermodal.style.display = 'block';
+            });
         });
     }
 
     // Close Delete Member Confirmation modal when "Cancel" button is clicked
-    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-    document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
-        deleteMembermodal.style.display = 'none';
+    const cancelDeleteBtn = document.getElementById('cancelDeleteButton');
+    if (cancelDeleteBtn) {
+        cancelDeleteBtn.addEventListener('click', () => {
+            deleteMembermodal.style.display = 'none';
+        });
+    }
+
+    // Function to handle checkbox selection and show/hide the table delete button
+    memberCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            // Checks if any checkbox is selected
+            const anyChecked = Array.from(memberCheckboxes).some(cb => cb.checked);
+            // Shows or hides the table delete button based on checkbox selection
+            tableDeleteBtn.style.display = anyChecked ? 'inline-block' : 'none';
+        });
     });
+
+    // Function to handle bulk delete action when the table delete button is clicked
+    tableDeleteBtn.addEventListener('click', () => {
+        const selectedCount = Array.from(memberCheckboxes).filter(cb => cb.checked).length;
+        deleteConfirmationModal.style.display = 'block';
+        const confirmDeleteBtn = document.getElementById('confirmDeleteButton');
+        confirmDeleteBtn.textContent = `Delete ${selectedCount} selected member(s)`;
+    });
+    
 
     // Close modals when clicking outside of them
     window.addEventListener('click', (event) => {
