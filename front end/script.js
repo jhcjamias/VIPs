@@ -7,7 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteMembermodal = document.getElementById('deleteMemberModal');
 
     // Function to open the Add Member modal
-
+    const addMemberBtn = document.getElementById('addMemberBtn');
+    addMemberBtn.addEventListener('click', () => {
+        addMembermodal.style.display = 'block';
+    });
 
     // Function to open the Edit Member modal (when pencil icon is clicked)
     const editButtons = document.querySelectorAll('.edit-member-btn');
