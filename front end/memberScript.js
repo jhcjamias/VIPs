@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     });
 
-    // Function to update number selected for deletion
+    // Function to update number selected for delete confirmation and delete from table
     function updateDeleteSelected() {
         const count = document.querySelectorAll('.member-checkbox:checked').length;
 
@@ -94,16 +94,17 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }  
 
+    // Function for delete confirmation of a single member
     const singleDeleteBtn = document.querySelector('.delete-member-btn');
     if (singleDeleteBtn) {
         singleDeleteBtn.onclick = () => {
-            confirmDeleteBtn.innerText = "Yes, Delete 1 Member";
+            confirmDeleteBtn.innerText = "Yes, Delete This Member";
             deleteMemberModal.style.display = 'block';
         };
     }
 
 
-    // Delete Members
+    // Function to Delete Members
     if (confirmDeleteBtn) {
         confirmDeleteBtn.onclick = async () => {
             let idsToDelete = [];
@@ -126,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.reload();
         };
     }
-
 
     // When cancelling a delete, it resets the counter and checkboxes
     const cancelDeleteBtn = document.getElementById('cancelDeleteButton');
