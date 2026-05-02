@@ -16,7 +16,15 @@ app.set('view engine', 'ejs');
 
 //members page
 app.get('/', async (req, res) => {
-    res.render('pages/members')
+    try {
+        const response = await axios.get('http://localhost:5000/members');
+        const membersData = response.data;
+        
+        res.render('pages/members', { members: membersData });
+    } catch (error) {
+        console.error("Error fetching members:", error.message);
+        res.render('pages/members', { members: [] });
+    }
 });
 
 
