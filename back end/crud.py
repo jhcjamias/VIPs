@@ -196,16 +196,25 @@ def read_members():
 @app.route('/events',methods=["GET"]) #Jamie 
 def read_events():
 
-    events =  execute_read_query(conn,'select * from event order by date')
+    query = '''
+        SELECT e.id, e.name, e.capacity, e.level, e.date, COUNT(r.member_id) as current_registered
+        FROM event e
+        LEFT JOIN registration r ON e.id = r.event_id
+        GROUP BY e.id
+        ORDER BY e.date
+    '''
+    events = execute_read_query(conn, query)
     event_list = []
 
     for event in events:
         id = event['id']
         name = event['name']
         capacity = event['capacity']
+        current_registered = event['current_registered']
         level = event['level']
         date = event['date']
-        line = f'{id}: {name} | {capacity} | {level} | {date}'
+        
+        line = f'{id}: {name} | {capacity} | {current_registered} | {level} | {date}'
         event_list.append(line)
 
     return event_list

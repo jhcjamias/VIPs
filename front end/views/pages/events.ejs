@@ -39,16 +39,19 @@
                         let dataParts = splitStr[1].split(' | '); 
                         
                         let name = dataParts[0] ? dataParts[0].trim() : "";
-                        let capacity = dataParts[1] ? dataParts[1].trim() : ""; 
-                        let level = dataParts[2] ? dataParts[2].trim() : "";   
-                        let date = dataParts[3] ? dataParts[3].trim() : "";   
+                        let capacity = dataParts[1] ? dataParts[1].trim() : ""; // Max Capacity
+                        let currentRegistered = dataParts[2] ? dataParts[2].trim() : "0"; // Current Capacity
+                        let level = dataParts[3] ? dataParts[3].trim() : "";   
+                        let date = dataParts[4] ? dataParts[4].trim() : "";   
                     %>
                         <tr>
                             <th scope="row">
                                 <input class="form-check-input event-checkbox" type="checkbox" value="<%= id %>">
                             </th>
                             <td><%= name %></td>
-                            <td><%= capacity %></td>
+                            
+                            <td><%= currentRegistered %>/<%= capacity %></td>
+                            
                             <td style="text-transform: capitalize;"><%= level %></td>
                             <td><%= date %></td>
                             <td>
