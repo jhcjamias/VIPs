@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.onclick = () => {
             document.getElementById('editEventId').value = btn.dataset.id;
             document.getElementById('editName').value = btn.dataset.name;
-            document.getElementById('editMaxCapacity').value = btn.dataset.maxCapacity
+            document.getElementById('editMaxCapacity').value = btn.dataset.capacity
             document.getElementById('editLevel').value = (btn.dataset.level || "bronze").trim().toLowerCase();
             document.getElementById('editDate').value = btn.dataset.date;
 
