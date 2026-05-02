@@ -33,16 +33,6 @@
                 </tr>
             </thead>
                 <tbody class="table-group-divider">
-                <% if (members && members.length > 0) { %>
-                    <% members.forEach(function(memberStr) { 
-                        // Parse the backend string: "1: Ajay | Patna | bronze"
-                        let splitStr = memberStr.split(': ');
-                        let id = splitStr[0];
-                        let details = splitStr[1].split(' | ');
-                        let name = details[0];
-                        let title = details[1];
-                        let level = details[2];
-                    %>
                         <tr>
                             <th scope="row">
                                 <input class="form-check-input member-checkbox" type="checkbox" value="<%= id %>">
