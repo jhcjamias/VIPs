@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.onclick = () => {
             document.getElementById('editMemberId').value = btn.dataset.id;
             document.getElementById('editName').value = btn.dataset.name;
-            document.getElementById('editDetails').value = "";
+            document.getElementById('editDetails').value = btn.dataset.details;
             document.getElementById('editTitle').value = btn.dataset.title;
             document.getElementById('editLevel').value = btn.dataset.level.trim().toLowerCase();
 
