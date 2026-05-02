@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             date: document.getElementById('date').value
         };
         
-        await fetch(`${apiBase}/event`, {
+        const response = await fetch(`${apiBase}/event`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(eventInfo)
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
             current_date: new Date().toISOString().split('T')[0] 
         };
         
-        await fetch(`${apiBase}/event`, {
+        const response = await fetch(`${apiBase}/event`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updateEventInfo)
