@@ -77,16 +77,22 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.onclick = async () => { 
             const memberId = btn.dataset.id;
             const tableBody = document.getElementById('memberEventsTableBody');
+
+            // clears the table (ensures no duplicate events appear) and adds Loading Events when waiting
+            tableBody.innerHTML = '<tr><td colspan="4" class="text-center">Loading events...</td></tr>';
+            
             viewEventsModal.style.display = 'block';
 
             try {
                 const response = await fetch(`${apiBase}/member/${memberId}/events`);
                 const events = await response.json();
 
+                // Clears the loading text
+                tableBody.innerHTML = ''; 
+
                 if (events.length > 0) {
                     events.forEach(event => {
                         const row = document.createElement('tr');
-
                         const formattedDate = new Date(event.date).toLocaleDateString('en-US', { timeZone: 'UTC' });
 
                         row.innerHTML = `
@@ -97,6 +103,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         `;
                         tableBody.appendChild(row);
                     });
+                } else {
+                    // Displayed if the member has 0 events
+                    tableBody.innerHTML = '<tr><td colspan="4" class="text-center" style="padding: 20px;">This member is not registered for any events.</td></tr>';
                 }
                 
             } catch (error) { 
