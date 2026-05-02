@@ -246,6 +246,24 @@ def read_registration():
     return jsonify(f'registration list for event {event}',list)
 
 
+@app.route('/member/<int:member_id>/events', methods=['GET'])
+def get_member_events(member_id):
+    # query to find all events registered for a specific member
+    query = '''
+        SELECT e.name, e.capacity, e.level, e.date 
+        FROM registration r
+        JOIN event e ON r.event_id = e.id
+        WHERE r.member_id = %s
+        ORDER BY e.date
+    '''
+    events = execute_read_query(conn, query, (member_id,))
+    
+    # If the member has no registrations, return an empty array
+    if not events:
+        return jsonify([])
+        
+    return jsonify(events)
+
 
 #####################################################
 #                                                   #

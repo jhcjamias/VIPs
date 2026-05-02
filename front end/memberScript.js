@@ -74,10 +74,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to open View Member's Registered Events Modal
     document.querySelectorAll('.view-member-events-btn').forEach(btn => {
-        btn.onclick = () => {
+        btn.onclick = async () => { 
+            const memberId = btn.dataset.id;
+            const tableBody = document.getElementById('memberEventsTableBody');
             viewEventsModal.style.display = 'block';
+
+            try {
+                const response = await fetch(`${apiBase}/member/${memberId}/events`);
+                const events = await response.json();
+
+                if (events.length > 0) {
+                    events.forEach(event => {
+                        const row = document.createElement('tr');
+
+                        const formattedDate = new Date(event.date).toLocaleDateString('en-US', { timeZone: 'UTC' });
+
+                        row.innerHTML = `
+                            <td>${event.name}</td>
+                            <td>${event.capacity}</td>
+                            <td style="text-transform: capitalize;">${event.level}</td>
+                            <td>${formattedDate}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                }
+                
+            } catch (error) { 
+                console.error("Error fetching registered events:", error);
+                tableBody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Error loading events.</td></tr>';
+            }
         };
     });
+
 
     // Function to update number selected for delete confirmation and delete from table
     function updateDeleteSelected() {
