@@ -1,6 +1,7 @@
 import mysql.connector
 import flask
 from mysql.connector import Error
+from flask_cors import CORS
 from flask import jsonify, request 
 
 import creds #local file
@@ -13,6 +14,7 @@ conn = create_connection(myCreds.conString, myCreds.userName, myCreds.password, 
 
 #set up application
 app = flask.Flask(__name__)
+CORS(app)
 app.config["DEBUG"] = True
 
 #create tables
