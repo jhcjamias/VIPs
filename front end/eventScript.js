@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.onclick = () => {
             document.getElementById('editEventId').value = btn.dataset.id;
             document.getElementById('editName').value = btn.dataset.name;
-            document.getElementById('editMaxCapacity').value = btn.dataset.maxcapacity
+            document.getElementById('editMaxCapacity').value = btn.dataset.maxCapacity
             document.getElementById('editLevel').value = (btn.dataset.level || "bronze").trim().toLowerCase();
             document.getElementById('editDate').value = btn.dataset.date;
 
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const eventInfo = {
             name: document.getElementById('name').value,
-            capacity: document.getElementById('capacity').value,
+            maxCapacity: document.getElementById('maxCapacity').value,
             level: document.getElementById('level').value,
             date: document.getElementById('date').value
         };
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const updateEventInfo = {
             event_id: document.getElementById('editEventId').value,
             name: document.getElementById('editName').value,
-            capacity: document.getElementById('editCapacity').value,
+            maxCapacity: document.getElementById('editMaxCapacity').value,
             level: document.getElementById('editLevel').value,
             date: document.getElementById('editDate').value,
             // backend requires the current date to check if the new date is valid
