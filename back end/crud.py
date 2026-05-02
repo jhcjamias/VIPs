@@ -334,18 +334,18 @@ def update_event():
 
     #update only the capacity
     if 'capacity' in request_data:
-        new_capacity = request_data['capacity']
+        new_capacity = int(request_data['capacity'])
 
         #pull number of members registered for event
         query = '''select count(*)
-        from registration
+        as count from registration
         where event_id=%s;'''
         attending = execute_read_query(conn,query,(id,))
-        num_attending = attending[0]['count(*)']
+        num_attending = int(attending[0]['count(*)'])
 
         #check if new capacity < current number of members attending 
         if new_capacity < num_attending:
-            return f"there are {num_attending-new_capacity} more people attending than specified capacity. try again"
+            return jsonify({'message': f"there are {num_attending-new_capacity} more people attending than specified capacity. try again"})
 
         #all capacity checks passed
         query = '''update event 
@@ -378,7 +378,7 @@ def update_event():
                 too_high.append(person['member_id'])
         
         if len(too_high) != 0: 
-            return f"there are {len(too_high)} members at a higher level than the new level. try again"
+            return jsonify({f"there are {len(too_high)} members at a higher level than the new level. try again"})
 
         #all level checks passed 
         query = '''update event 
@@ -393,7 +393,7 @@ def update_event():
 
         #if date has passed, cannot change it
         if new_date < date:
-            return "date has already passed"
+            return jsonify({'message': "date has already passed"})
         
         #date checks passed 
         query = '''update event 
@@ -402,7 +402,7 @@ def update_event():
         '''
         execute_query(conn,query,(new_date,id))
     
-    return "event updated"
+    return jsonify({'message': "event updated"})
 
 
 @app.route('/registration',methods=["PATCH"]) #Jamie
