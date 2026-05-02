@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cancelAddEventBtn) {
         cancelAddEventBtn.onclick = () => {
             addEventModal.style.display = 'none';
-            document.getElementById('addEventForm').reset(); // Optional: clears the form if they cancel
+            document.getElementById('addEventForm').reset(); // Clears form when cancelled
         };
     }
 

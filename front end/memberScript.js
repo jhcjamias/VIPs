@@ -144,14 +144,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const addBtn = document.getElementById('addMemberBtn');
     if (addBtn) addBtn.onclick = () => addMemberModal.style.display = 'block';
 
-    window.addEventListener('click', (e) => {
-        if (e.target === addMemberModal) addMemberModal.style.display = 'none';
-        if (e.target === editMemberModal) editMemberModal.style.display = 'none';
-        if (e.target === viewEventsModal) viewEventsModal.style.display = 'none';
-        if (e.target === deleteMemberModal) {
-            deleteMemberModal.style.display = 'none';
-            document.querySelectorAll('.member-checkbox').forEach(cb => cb.checked = false);
-            updateDeleteSelected();
-        }
-    });
+    // Function for cancel buttons (Add Member and Edit Member)
+    const cancelAddMemberBtn = document.getElementById('cancelAddMemberBtn');
+    if (cancelAddMemberBtn) {
+        cancelAddMemberBtn.onclick = () => {
+            addMemberModal.style.display = 'none';
+            document.getElementById('addMemberForm').reset(); // Clears the form when cancelled
+        };
+    }
+
+    const cancelEditMemberBtn = document.getElementById('cancelEditMemberBtn');
+    if (cancelEditMemberBtn) {
+        cancelEditMemberBtn.onclick = () => {
+            editMemberModal.style.display = 'none';
+        };
+    }
 });
