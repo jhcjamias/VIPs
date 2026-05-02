@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const eventInfo = {
             name: document.getElementById('name').value,
-            maxCapacity: document.getElementById('maxCapacity').value,
+            capacity: document.getElementById('maxCapacity').value,
             level: document.getElementById('level').value,
             date: document.getElementById('date').value
         };
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const updateEventInfo = {
             event_id: document.getElementById('editEventId').value,
             name: document.getElementById('editName').value,
-            maxCapacity: document.getElementById('editMaxCapacity').value,
+            capacity: document.getElementById('editMaxCapacity').value,
             level: document.getElementById('editLevel').value,
             date: document.getElementById('editDate').value,
             // backend requires the current date to check if the new date is valid
