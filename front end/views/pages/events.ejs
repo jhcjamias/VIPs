@@ -53,7 +53,7 @@
                             <td><%= currentRegistered %>/<%= capacity %></td>
                             
                             <td style="text-transform: capitalize;"><%= level %></td>
-                            <td><%= date %></td>
+                            <td><%= new Date(date).toLocaleDateString('en-US', { timeZone: 'UTC' }) %></td>
                             <td>
                                 <div class="d-flex gap-2">
                                     <button type="button" class="btn btn-light view-event-members-btn" title="View Registered Members" data-id="<%= id %>">
