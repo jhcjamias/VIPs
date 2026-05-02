@@ -34,7 +34,7 @@
             </thead>
 
             <!-- EJS will use %. each row equals one person -->
-            <tbody class="table-group-divider">
+            <!-- <tbody class="table-group-divider">
                 <tr>
                     <th scope="row">
                         <input class="form-check-input member-checkbox" type="checkbox" value="" id="checkDefault">
@@ -72,7 +72,17 @@
                     <td>Parush</td>
                     <td>Kolkata</td>
                     <td>22</td>
-                    <td>
+                    <td> -->
+                
+                <tr>
+                    <th scope="row">
+                        <input class="form-check-input member-checkbox" type="checkbox" value="<%= id %>">
+                    </th>
+                    <td><%= name %></td>
+                    <td><%= title %></td>
+                    <td style="text-transform: capitalize;"><%= level %></td>
+                    <td>        
+
                         <div class="">
                             <button type="button" class="btn btn-light view-member-events-btn" title="View Registered Events">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-event" viewBox="0 0 16 16">
