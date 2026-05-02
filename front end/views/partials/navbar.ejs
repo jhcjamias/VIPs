@@ -5,14 +5,14 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item active" id="Members">
-        <a class="nav-link" href="#">Members <span class="visually-hidden">(current)</span></a>
+      <li class="nav-item <%= path === '/' ? 'active' : '' %>">
+        <a class="nav-link" href="/">Members</a>
       </li>
-      <li class="nav-item" id="Events">
-        <a class="nav-link" href="#">Events</a>
+      <li class="nav-item <%= path === '/events' ? 'active' : '' %>">
+        <a class="nav-link" href="/events">Events</a>
       </li>
-      <li class="nav-item" id="Registration">
-        <a class="nav-link" href="#">Register Member to Event</a>
+      <li class="nav-item <%= path === '/register' ? 'active' : '' %>">
+        <a class="nav-link" href="/register">Register Member to Event</a>
       </li>
     </ul>
   </div>
