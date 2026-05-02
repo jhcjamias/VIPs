@@ -3,9 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const apiBase = 'http://localhost:5000';
     const tableBody = document.querySelector('.table-group-divider');
 
-    const addMembermodal = document.getElementById('addMemberModal');
-    const editMembermmdal = document.getElementById('editMemberModal');
-    const deleteMembermodal = document.getElementById('deleteConfirmationModal');
+    const addMemberModal = document.getElementById('addMemberModal');
+    const editMemberModal = document.getElementById('editMemberModal');
+    const deleteMemberModal = document.getElementById('deleteConfirmationModal');
     const viewEventsModal = document.getElementById('viewEventsModal');
     const memberEventsTableBody = document.getElementById('memberEventsTableBody');
 
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('editLevel').value = btn.dataset.level.trim().toLowerCase();
 
             currentDeleteId = btn.dataset.id;
-            editMembermodal.style.display = 'block';
+            editMemberModal.style.display = 'block';
         };
     });
 
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelDeleteBtn = document.getElementById('cancelDeleteButton');
     if (cancelDeleteBtn) {
         cancelDeleteBtn.onclick = () => {
-            deleteMembermodal.style.display = 'none';
+            deleteMemberModal.style.display = 'none';
             document.querySelectorAll('.member-checkbox').forEach(cb => cb.checked = false);
             updateDeleteSelected();
         };
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeModalBtn) closeModalBtn.onclick = () => viewEventsModal.style.display = 'none';
 
     const addBtn = document.getElementById('addMemberBtn');
-    if (addBtn) addBtn.onclick = () => addMembermodal.style.display = 'block';
+    if (addBtn) addBtn.onclick = () => addMemberModal.style.display = 'block';
 
     window.onclick = (e) => {
         if (e.target === addMembermodal) addMembermodal.style.display = 'none';
