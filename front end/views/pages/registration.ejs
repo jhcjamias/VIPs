@@ -161,68 +161,74 @@
 </head>
 
 <header>
-    <%- include('../partials/navbar'); %>    
+        
 </header>
 
 <body>
+    <%- include('../partials/navbar'); %>
 
     <div class="container">
 
         <div class="card">
-        <div class="card-header">
-            <h5><i class="bi bi-search me-2"></i>Searchable Dropdown</h5>
-            <small class="text-muted">Type to filter &mdash; click or use arrow keys</small>
-        </div>
+            <div class="card-header">
+                <h5><i class="bi bi-search me-2"></i>Searchable Dropdown</h5>
+                <small class="text-muted">Type to filter &mdash; click or use arrow keys</small>
+            </div>
         <div class="card-body">
+            <div id="alertContainer"></div>
+            <!-- ======== SEARCHABLE DROPDOWN MENU ========== -->
+            <div class="mb-4">
+                <label for="memberDropdown" class="form-label">Select a Member</label>                    <div class="searchable-dropdown" id="searchableDropdown">
+                        <input
+                        type="text"
+                        class="form-control"
+                        id="memberDropdown"
+                        placeholder="Type to search members..."
+                        autocomplete="off"
+                        >
+                        <span class="dropdown-toggle-icon">
+                            <i class="bi bi-chevron-down"></i>
+                        </span>
+                        <ul class="dropdown-menu" id="memberMenu"></ul>
+                    </div>
+                    <div class="selected-display" id="selectedDisplay">
+                        Selected: <strong>None</strong>
+                    </div>
+                </div>
+                <!-- ================================================ -->
 
-            <!-- ============ THE SEARCHABLE DROPDOWN ============ -->
-            <div class="mb-3">
-                <label for="countryDropdown" class="form-label">Select a Country</label>
-                <div class="searchable-dropdown" id="searchableDropdown">
-                    <input
-                    type="text"
-                    class="form-control"
-                    id="countryDropdown"
-                    placeholder="Type to search..."
-                    autocomplete="off"
-                    >
-                    <span class="dropdown-toggle-icon">
-                        <i class="bi bi-chevron-down"></i>
-                    </span>
-                    <ul class="dropdown-menu" id="dropdownMenu"></ul>
+                <!-- SEARCHABLE DOWNDROP FOR EVENTS -->
+                <div class="mb-0">
+                    <label for="eventDropdown" class="form-label">Select an Event</label>
+                    <div class="searchable-dropdown" id="eventDropdownWrapper">
+                        <input
+                        type="text"
+                        class="form-control"
+                        id="eventDropdown"
+                        placeholder="Search events..."
+                        autocomplete="off"
+                        >
+                        <span class="dropdown-toggle-icon">
+                            <i class="bi bi-chevron-down"></i>
+                        </span>
+                        <ul class="dropdown-menu" id="eventMenu"></ul>
+                    </div>
+                    <div class="selected-display" id="eventSelectedDisplay">
+                        Selected: <strong>None</strong>
+                    </div>
                 </div>
-                <div class="selected-display" id="selectedDisplay">
-                    Selected: <strong>None</strong>
+                <div class="d-flex justify-content-end pt-4 pb-2">
+                    <button id="reg" type="button" class="btn btn-primary">Register</button>
                 </div>
+
             </div>
-            <!-- ================================================ -->
-
-            <!-- Another example: fruit picker -->
-            <div class="mb-0">
-                <label for="fruitDropdown" class="form-label">Pick a Fruit</label>
-                <div class="searchable-dropdown" id="fruitDropdownWrapper">
-                    <input
-                    type="text"
-                    class="form-control"
-                    id="fruitDropdown"
-                    placeholder="Search fruits..."
-                    autocomplete="off"
-                    >
-                    <span class="dropdown-toggle-icon">
-                        <i class="bi bi-chevron-down"></i>
-                    </span>
-                    <ul class="dropdown-menu" id="fruitMenu"></ul>
-                </div>
-                <div class="selected-display" id="fruitSelectedDisplay">
-                    Selected: <strong>None</strong>
-                </div>
-            </div>
-
-        </div>
         </div>
     </div>
 
-    <script src="../../script.js"></script>
+    <script id="registration-data" type="application/json">
+        <%- JSON.stringify({ members: members, events: events }) %>
+    </script>
+    <script src="../../regScript.js"></script>
 
 </body>
 

@@ -282,6 +282,43 @@ def get_event_members(event_id):
         
     return jsonify(members)
 
+@app.route('/event/<level>', methods=['GET'])
+def get_event_by_lvl(level):
+
+    # edit conditions so that events shown are filtered by rank 
+    if level == 'bronze':
+        query = '''
+        select e.id, e.name, count(r.member_id) as 'attending', e.capacity, e.level
+        from event e
+        left join registration r on r.event_id = e.id
+        where e.level = 'bronze'
+        group by e.id
+        '''
+    elif level == 'silver':
+        query = '''
+        select e.id, e.name, count(r.member_id) as 'attending', e.capacity, e.level
+        from event e
+        left join registration r on r.event_id = e.id
+        where e.level = 'gold' or e.level = 'silver'
+        group by e.id
+        '''
+    elif level == 'gold':
+        query = '''
+        select e.id, e.name, count(r.member_id) as 'attending', e.capacity, e.level
+        from event e
+        left join registration r on r.event_id = e.id
+        where e.level in ('gold', 'silver', 'bronze')
+        group by e.id
+        '''  
+    else:
+        return jsonify([])
+    
+    events_available = execute_read_query(conn, query)
+
+    if not events_available:
+        return jsonify([])
+        
+    return jsonify(events_available)
 
 #####################################################
 #                                                   #

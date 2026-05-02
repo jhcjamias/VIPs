@@ -42,18 +42,16 @@ app.get('/events', async (req, res) => {
 
 app.get('/register', async (req, res) => {
     try {
-        //get members 
+        // get members from Flask API
         const memberResponse = await axios.get('http://localhost:5000/members');
         const membersData = memberResponse.data;
 
-        const eventResponse = await axios.get('http://localhost:5000/events'); 
-        const eventsData = eventResponse.data;
-        
-        res.render('pages/registration', { members: membersData });
+        // We pass an empty array for events because regScript.js will fetch them dynamically now
+        res.render('pages/registration', { members: membersData, events: [] });
         
     } catch (error) {
         console.error("Error fetching registration:", error.message);
-        res.render('pages/registration', { members: [] });
+        res.render('pages/registration', { members: [], events: [] });
     }
 });
 
