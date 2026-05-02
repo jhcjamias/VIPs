@@ -265,6 +265,24 @@ def get_member_events(member_id):
     return jsonify(events)
 
 
+@app.route('/event/<int:event_id>/members', methods=['GET'])
+def get_event_members(event_id):
+    # query to find all members who have registered for a specific event
+    query = '''
+        SELECT m.name, m.title, m.level 
+        FROM registration r
+        JOIN member m ON r.member_id = m.id
+        WHERE r.event_id = %s
+    '''
+    members = execute_read_query(conn, query, (event_id,))
+    
+    # If the event has no registrations, return an empty array
+    if not members:
+        return jsonify([])
+        
+    return jsonify(members)
+
+
 #####################################################
 #                                                   #
 #               All Update Functions                #
