@@ -287,48 +287,58 @@ document.addEventListener('DOMContentLoaded', () => {
         placeholder: 'Search members...',
         
         // This callback runs when a member is selected
-        onSelect: (value, label) => {
-            // "value" holds the raw string from Flask. Let's split it to get the level at the end.
+        onSelect: async (value, label) => {
+            const memberId = value.split(':')[0].trim();
             const parts = value.split(' | ');
             const memberLevel = parts[parts.length - 1].trim(); 
 
-            console.log(`Member selected. Level parsed as: ${memberLevel}`);
+            console.log(`Member selected. ID: ${memberId}, Level: ${memberLevel}`);
 
-            // Reset and show loading state on the Event dropdown
             eventInput.disabled = false;
             eventInput.value = "";
             eventInput.placeholder = "Loading available events...";
             document.getElementById('eventSelectedDisplay').innerHTML = 'Selected: <strong>None</strong>';
 
-            // Fetch the filtered events from crud.py based on memberLevel
-            fetch(`${apiBase}/event/${memberLevel}`)
-                .then(response => response.json())
-                .then(eventsData => {
-                    // Flask returns objects like: { name: '...', attending: ..., level: '...' }
-                    const eventOptions = eventsData.length
-                        ? eventsData.map(e => ({ label: e.name, value: e.name }))
-                        : [];
+            try {
+                // FETCH SEQUENTIALLY TO PREVENT FLASK/MYSQL CRASH
+                // 1. Get the events for this level
+                const eventsResponse = await fetch(`${apiBase}/event/${memberLevel}`);
+                const eventsData = await eventsResponse.json();
 
-                    // Initialize the Event Dropdown with the newly fetched data
-                    initSearchableDropdown({
-                        wrapperId: 'eventDropdownWrapper',
-                        inputId: 'eventDropdown',
-                        menuId: 'eventMenu',
-                        displayId: 'eventSelectedDisplay',
-                        data: eventOptions,
-                        placeholder: eventOptions.length ? 'Search events...' : 'No events available for this level'
-                    });
+                // 2. Wait for the first to finish, THEN get registered events
+                const registeredResponse = await fetch(`${apiBase}/member/${memberId}/events`);
+                const registeredEvents = await registeredResponse.json();
+                
+                const registeredEventNames = new Set(registeredEvents.map(e => e.name));
 
-                    // Disable it again if they are gold and no gold events exist, etc.
-                    if (eventOptions.length === 0) {
-                        eventInput.disabled = true;
-                    }
-                })
-                .catch(err => {
-                    console.error("Error fetching events:", err);
-                    eventInput.placeholder = "Error loading events";
-                    eventInput.disabled = true;
+                const eventOptions = eventsData.length
+                    ? eventsData.map(e => {
+                        const isRegistered = registeredEventNames.has(e.name);
+                        
+                        const statusText = isRegistered ? ' ✓ (Already Registered)' : '';
+                        const displayLabel = `${e.name} — ${e.attending}/${e.capacity} attending${statusText}`;
+                        
+                        return { label: displayLabel, value: e.name }; 
+                    })
+                    : [];
+
+                initSearchableDropdown({
+                    wrapperId: 'eventDropdownWrapper',
+                    inputId: 'eventDropdown',
+                    menuId: 'eventMenu',
+                    displayId: 'eventSelectedDisplay',
+                    data: eventOptions,
+                    placeholder: eventOptions.length ? 'Search events...' : 'No events available for this level'
                 });
+
+                if (eventOptions.length === 0) {
+                    eventInput.disabled = true;
+                }
+            } catch (err) {
+                console.error("Error fetching events:", err);
+                eventInput.placeholder = "Error loading events";
+                eventInput.disabled = true;
+            }
         }
     });
 });
