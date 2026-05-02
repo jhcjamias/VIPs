@@ -337,15 +337,16 @@ def update_event():
         new_capacity = int(request_data['capacity'])
 
         #pull number of members registered for event
-        query = '''select count(*)
-        as count from registration
+        query = '''select count(*) as count 
+        from registration
         where event_id=%s;'''
         attending = execute_read_query(conn,query,(id,))
-        num_attending = int(attending[0]['count(*)'])
+        
+        num_attending = int(attending[0]['count'])
 
         #check if new capacity < current number of members attending 
         if new_capacity < num_attending:
-            return jsonify({'message': f"there are {num_attending-new_capacity} more people attending than specified capacity. try again"})
+            return jsonify({'message': f"There are {num_attending-new_capacity} more people attending than specified capacity. Try again."})
 
         #all capacity checks passed
         query = '''update event 
