@@ -184,9 +184,10 @@ def read_members():
     for member in members:
         id = member['id']
         name = member['name']
+        details = member['details'] if member['details'] else ""
         title = member['title']
         level = member['level']
-        line = f'{id}: {name} | {title} | {level}'
+        line = f'{id}: {name} | {details} | {title} | {level}'
         member_list.append(line)
     
     return member_list
@@ -195,16 +196,25 @@ def read_members():
 @app.route('/events',methods=["GET"]) #Jamie 
 def read_events():
 
-    events =  execute_read_query(conn,'select * from event order by date')
+    query = '''
+        SELECT e.id, e.name, e.capacity, e.level, e.date, COUNT(r.member_id) as current_registered
+        FROM event e
+        LEFT JOIN registration r ON e.id = r.event_id
+        GROUP BY e.id
+        ORDER BY e.date
+    '''
+    events = execute_read_query(conn, query)
     event_list = []
 
     for event in events:
         id = event['id']
         name = event['name']
         capacity = event['capacity']
+        current_registered = event['current_registered']
         level = event['level']
         date = event['date']
-        line = f'{id}: {name} | {capacity} | {level} | {date}'
+        
+        line = f'{id}: {name} | {capacity} | {current_registered} | {level} | {date}'
         event_list.append(line)
 
     return event_list
@@ -235,6 +245,42 @@ def read_registration():
 
     return jsonify(f'registration list for event {event}',list)
 
+
+@app.route('/member/<int:member_id>/events', methods=['GET'])
+def get_member_events(member_id):
+    # query to find all events registered for a specific member
+    query = '''
+        SELECT e.name, e.capacity, e.level, e.date 
+        FROM registration r
+        JOIN event e ON r.event_id = e.id
+        WHERE r.member_id = %s
+        ORDER BY e.date
+    '''
+    events = execute_read_query(conn, query, (member_id,))
+    
+    # If the member has no registrations, return an empty array
+    if not events:
+        return jsonify([])
+        
+    return jsonify(events)
+
+
+@app.route('/event/<int:event_id>/members', methods=['GET'])
+def get_event_members(event_id):
+    # query to find all members who have registered for a specific event
+    query = '''
+        SELECT m.name, m.title, m.level 
+        FROM registration r
+        JOIN member m ON r.member_id = m.id
+        WHERE r.event_id = %s
+    '''
+    members = execute_read_query(conn, query, (event_id,))
+    
+    # If the event has no registrations, return an empty array
+    if not members:
+        return jsonify([])
+        
+    return jsonify(members)
 
 
 #####################################################
@@ -275,7 +321,7 @@ def update_member():
         set title = %s
         where id = %s;
         '''
-        execute_query(conn,query,(new_details,id))
+        execute_query(conn,query,(new_title,id))
 
     #update only the level 
     #if member is registered to an event with a higher tier and the update makes them an invalid member, then an error would show
@@ -333,18 +379,19 @@ def update_event():
 
     #update only the capacity
     if 'capacity' in request_data:
-        new_capacity = request_data['capacity']
+        new_capacity = int(request_data['capacity'])
 
         #pull number of members registered for event
-        query = '''select count(*)
+        query = '''select count(*) as count 
         from registration
         where event_id=%s;'''
         attending = execute_read_query(conn,query,(id,))
-        num_attending = attending[0]['count(*)']
+        
+        num_attending = int(attending[0]['count'])
 
         #check if new capacity < current number of members attending 
         if new_capacity < num_attending:
-            return f"there are {num_attending-new_capacity} more people attending than specified capacity. try again"
+            return jsonify({'message': f"There are {num_attending-new_capacity} more people attending than specified capacity. Try again."})
 
         #all capacity checks passed
         query = '''update event 
@@ -377,7 +424,7 @@ def update_event():
                 too_high.append(person['member_id'])
         
         if len(too_high) != 0: 
-            return f"there are {len(too_high)} members at a higher level than the new level. try again"
+            return jsonify({f"there are {len(too_high)} members at a higher level than the new level. try again"})
 
         #all level checks passed 
         query = '''update event 
@@ -392,7 +439,7 @@ def update_event():
 
         #if date has passed, cannot change it
         if new_date < date:
-            return "date has already passed"
+            return jsonify({'message': "date has already passed"})
         
         #date checks passed 
         query = '''update event 
@@ -401,7 +448,7 @@ def update_event():
         '''
         execute_query(conn,query,(new_date,id))
     
-    return "event updated"
+    return jsonify({'message': "event updated"})
 
 
 @app.route('/registration',methods=["PATCH"]) #Jamie

@@ -14,7 +14,7 @@ app.use(express.static(__dirname));
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
-//members page
+// routes members data from Flask API
 app.get('/', async (req, res) => {
     try {
         const response = await axios.get('http://localhost:5000/members');
@@ -24,6 +24,19 @@ app.get('/', async (req, res) => {
     } catch (error) {
         console.error("Error fetching members:", error.message);
         res.render('pages/members', { members: [] });
+    }
+});
+
+//routes events data from Flask API
+app.get('/events', async (req, res) => {
+    try {
+        const response = await axios.get('http://localhost:5000/events');
+        const eventsData = response.data;
+        
+        res.render('pages/events', { events: eventsData });
+    } catch (error) {
+        console.error("Error fetching events:", error.message);
+        res.render('pages/events', { events: [] });
     }
 });
 
