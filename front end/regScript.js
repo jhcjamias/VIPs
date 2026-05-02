@@ -1,6 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Calls to Flask API
     const apiBase = 'http://localhost:5000';
+    const registrationDataElem = document.getElementById('registration-data');
+    let registrationData = { members: [], events: [] };
+    if (registrationDataElem && registrationDataElem.textContent.trim().length) {
+        try {
+            registrationData = JSON.parse(registrationDataElem.textContent);
+        } catch (error) {
+            console.error('Failed to parse registration data', error);
+        }
+    }
+    const members = Array.isArray(registrationData.members) ? registrationData.members : [];
+    const events = Array.isArray(registrationData.events) ? registrationData.events : [];
 
     /**
      * Reusable function to create a searchable dropdown.
@@ -229,56 +239,46 @@ document.addEventListener('DOMContentLoaded', () => {
         return div.innerHTML;
     }
 
+
     // ==================== INITIALIZE EXAMPLES ====================
 
-    // --- Example 1: Countries ---
-    const countries = [
-        'Afghanistan', 'Albania', 'Algeria', 'Argentina', 'Australia',
-        'Austria', 'Bangladesh', 'Belgium', 'Brazil', 'Canada',
-        'China', 'Colombia', 'Denmark', 'Egypt', 'Finland',
-        'France', 'Germany', 'Greece', 'India', 'Indonesia',
-        'Ireland', 'Italy', 'Japan', 'Kenya', 'Malaysia',
-        'Mexico', 'Netherlands', 'New Zealand', 'Nigeria', 'Norway',
-        'Pakistan', 'Philippines', 'Poland', 'Portugal', 'Russia',
-        'Singapore', 'South Africa', 'South Korea', 'Spain', 'Sweden',
-        'Switzerland', 'Thailand', 'Turkey', 'Ukraine', 'United Kingdom',
-        'United States', 'Vietnam'
-    ];
+    const memberOptions = members.length
+        ? members.map(item => {
+            if (typeof item === 'string' && item.includes(': ')) {
+                const value = item.split(': ').slice(1).join(': ');
+                return { label: value, value };
+            }
+            return item;
+        })
+        : ['No members available'];
 
     initSearchableDropdown({
         wrapperId: 'searchableDropdown',
-        inputId: 'countryDropdown',
-        menuId: 'dropdownMenu',
+        inputId: 'memberDropdown',
+        menuId: 'memberMenu',
         displayId: 'selectedDisplay',
-        data: countries,
-        placeholder: 'Type to search countries...'
+        data: memberOptions,
+        placeholder: 'Search members...'
     });
 
-    // --- Example 2: Fruits (using label/value objects) ---
-    const fruits = [
-        { label: '🍎 Apple', value: 'apple' },
-        { label: '🍌 Banana', value: 'banana' },
-        { label: '🍒 Cherry', value: 'cherry' },
-        { label: '🍇 Grape', value: 'grape' },
-        { label: '🥝 Kiwi', value: 'kiwi' },
-        { label: '🍋 Lemon', value: 'lemon' },
-        { label: '🥭 Mango', value: 'mango' },
-        { label: '🍊 Orange', value: 'orange' },
-        { label: '🍑 Peach', value: 'peach' },
-        { label: '🍐 Pear', value: 'pear' },
-        { label: '🍍 Pineapple', value: 'pineapple' },
-        { label: '🍓 Strawberry', value: 'strawberry' },
-        { label: '🍉 Watermelon', value: 'watermelon' },
-        { label: '🫐 Blueberry', value: 'blueberry' },
-    ];
+
+    // --- Example 2: Events (using label/value objects) ---
+    const eventOptions = events.length
+        ? events.map(item => {
+            if (typeof item === 'string' && item.includes(': ')) {
+                const value = item.split(': ').slice(1).join(': ');
+                return { label: value, value };
+            }
+            return { label: item, value: item };
+        })
+        : [];
 
     initSearchableDropdown({
-        wrapperId: 'fruitDropdownWrapper',
-        inputId: 'fruitDropdown',
-        menuId: 'fruitMenu',
-        displayId: 'fruitSelectedDisplay',
-        data: fruits,
-        placeholder: 'Search your favorite fruit...'
-    });  
-    
+        wrapperId: 'eventDropdownWrapper',
+        inputId: 'eventDropdown',
+        menuId: 'eventMenu',
+        displayId: 'eventSelectedDisplay',
+        data: eventOptions,
+        placeholder: 'Search events...'
+    });
 });

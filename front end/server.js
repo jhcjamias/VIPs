@@ -36,11 +36,11 @@ app.get('/register', async (req, res) => {
         const eventResponse = await axios.get('http://localhost:5000/events'); 
         const eventsData = eventResponse.data;
         
-        res.render('pages/registration', { members: membersData });
+        res.render('pages/registration', { members: membersData, events: eventsData });
         
     } catch (error) {
         console.error("Error fetching registration:", error.message);
-        res.render('pages/registration', { members: [] });
+        res.render('pages/registration', { members: [], events: [] });
     }
 });
 
