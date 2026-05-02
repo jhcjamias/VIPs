@@ -26,11 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.onclick = () => {
             document.getElementById('editMemberId').value = btn.dataset.id;
             document.getElementById('editName').value = btn.dataset.name;
-
-            // If information is missing in details textbox, it leaves it blank
-            let safeDetails = btn.dataset.details;
-            if (safeDetails === "undefined" || !safeDetails) safeDetails = "";
-            document.getElementById('editDetails').value = safeDetails;
+            document.getElementById('editDetails').value = btn.dataset.details || "";
             document.getElementById('editTitle').value = btn.dataset.title;
             document.getElementById('editLevel').value = (btn.dataset.level || "bronze").trim().toLowerCase();
 
