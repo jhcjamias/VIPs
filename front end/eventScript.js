@@ -142,14 +142,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const addBtn = document.getElementById('addEventBtn');
     if (addBtn) addBtn.onclick = () => addEventModal.style.display = 'block';
 
-    window.addEventListener('click', (e) => {
-        if (e.target === addEventModal) addEventModal.style.display = 'none';
-        if (e.target === editEventModal) editEventModal.style.display = 'none';
-        if (e.target === viewMembersModal) viewMembersModal.style.display = 'none';
-        if (e.target === deleteEventModal) {
-            deleteEventModal.style.display = 'none';
-            document.querySelectorAll('.event-checkbox').forEach(cb => cb.checked = false);
-            updateDeleteSelected();
-        }
-    });
+    // Function for cancel buttons (Add Event and Edit Event)
+    const cancelAddEventBtn = document.getElementById('cancelAddEventBtn');
+    if (cancelAddEventBtn) {
+        cancelAddEventBtn.onclick = () => {
+            addEventModal.style.display = 'none';
+            document.getElementById('addEventForm').reset(); // Optional: clears the form if they cancel
+        };
+    }
+
+    const cancelEditEventBtn = document.getElementById('cancelEditEventBtn');
+    if (cancelEditEventBtn) {
+        cancelEditEventBtn.onclick = () => {
+            editEventModal.style.display = 'none';
+        };
+    }
 });
