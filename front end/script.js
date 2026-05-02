@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (addBtn) addBtn.onclick = () => addMemberModal.style.display = 'block';
 
     window.addEventListener('click', (e) => {
-        if (e.target === addMembermodal) addMembermodal.style.display = 'none';
+        if (e.target === addMemberModal) addMemberModal.style.display = 'none';
         if (e.target === editMemberModal) editMemberModal.style.display = 'none';
         if (e.target === viewEventsModal) viewEventsModal.style.display = 'none';
         if (e.target === deleteMemberModal) {
