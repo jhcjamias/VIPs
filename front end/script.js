@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to add listeners to table rows
     function attachRowListeners() {
         document.querySelectorAll('.member-checkbox').forEach(cb => {
-            cb.addEventListener('change', updateDeleteCounter);
+            cb.addEventListener('change', updateDeleteSelected);
         });
 
         // Edit Modal Pop-Up Population
