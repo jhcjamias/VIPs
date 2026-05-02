@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const addBtn = document.getElementById('addMemberBtn');
     if (addBtn) addBtn.onclick = () => addMemberModal.style.display = 'block';
 
-    window.onclick = (e) => {
+    window.addEventListener('click', (e) => {
         if (e.target === addMembermodal) addMembermodal.style.display = 'none';
         if (e.target === editMemberModal) editMemberModal.style.display = 'none';
         if (e.target === viewEventsModal) viewEventsModal.style.display = 'none';
@@ -153,5 +153,5 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.member-checkbox').forEach(cb => cb.checked = false);
             updateDeleteSelected();
         }
-    };
+    });
 });
