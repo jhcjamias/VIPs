@@ -32,73 +32,47 @@
                     <th scope="col">Edit</th>
                 </tr>
             </thead>
-
-            <!-- EJS will use %. each row equals one person -->
-            <!-- <tbody class="table-group-divider">
-                <tr>
-                    <th scope="row">
-                        <input class="form-check-input member-checkbox" type="checkbox" value="" id="checkDefault">
-                    </th>
-                    <td>Ajay</td>
-                    <td>Patna</td>
-                    <td>20</td>
-                    <td>
-                        <button type="button" class="btn btn-light edit-member-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
-                            </svg>
-                        </button>
-                    </td>                    
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <input class="form-check-input member-checkbox" type="checkbox" value="" id="checkDefault">
-                    </th>
-                    <td>Rahul</td>
-                    <td>Chandigarh</td>
-                    <td>17</td>
-                    <td>
-                        <button type="button" class="btn btn-light">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <input class="form-check-input member-checkbox" type="checkbox" value="" id="checkDefault">
-                    </th>
-                    <td>Parush</td>
-                    <td>Kolkata</td>
-                    <td>22</td>
-                    <td> -->
-                
-                <tr>
-                    <th scope="row">
-                        <input class="form-check-input member-checkbox" type="checkbox" value="<%= id %>">
-                    </th>
-                    <td><%= name %></td>
-                    <td><%= title %></td>
-                    <td style="text-transform: capitalize;"><%= level %></td>
-                    <td>        
-
-                        <div class="">
-                            <button type="button" class="btn btn-light view-member-events-btn" title="View Registered Events">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-event" viewBox="0 0 16 16">
-                                    <path d="<M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
-                                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
-                                </svg>
-                            </button>
-
-                            <button type="button" class="btn btn-light edit-member-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </td>                    
-                </tr>
+                <tbody class="table-group-divider">
+                <% if (members && members.length > 0) { %>
+                    <% members.forEach(function(memberStr) { 
+                        // Parse the backend string: "1: Ajay | Patna | bronze"
+                        let splitStr = memberStr.split(': ');
+                        let id = splitStr[0];
+                        let details = splitStr[1].split(' | ');
+                        let name = details[0];
+                        let title = details[1];
+                        let level = details[2];
+                    %>
+                        <tr>
+                            <th scope="row">
+                                <input class="form-check-input member-checkbox" type="checkbox" value="<%= id %>">
+                            </th>
+                            <td><%= name %></td>
+                            <td><%= title %></td>
+                            <td style="text-transform: capitalize;"><%= level %></td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-light view-member-events-btn" title="View Registered Events" data-id="<%= id %>">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-event" viewBox="0 0 16 16">
+                                            <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                                        </svg>
+                                    </button>
+            
+                                    <button type="button" class="btn btn-light edit-member-btn" data-id="<%= id %>" data-name="<%= name %>" data-title="<%= title %>" data-level="<%= level %>">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                            <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="5" class="text-center" style="padding: 20px;">No members found. Add a member to get started!</td>
+                    </tr>
+                <% } %>
             </tbody>
         </table>
     </div>
