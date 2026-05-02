@@ -288,7 +288,7 @@ def get_event_by_lvl(level):
     # edit conditions so that events shown are filtered by rank 
     if level == 'bronze':
         query = '''
-        select e.name, count(r.member_id) as 'attending', e.capacity, e.level
+        select e.id, e.name, count(r.member_id) as 'attending', e.capacity, e.level
         from event e
         left join registration r on r.event_id = e.id
         where e.level = 'bronze'
@@ -296,7 +296,7 @@ def get_event_by_lvl(level):
         '''
     elif level == 'silver':
         query = '''
-        select e.name, count(r.member_id) as 'attending', e.capacity, e.level
+        select e.id, e.name, count(r.member_id) as 'attending', e.capacity, e.level
         from event e
         left join registration r on r.event_id = e.id
         where e.level = 'gold' or e.level = 'silver'
@@ -304,7 +304,7 @@ def get_event_by_lvl(level):
         '''
     elif level == 'gold':
         query = '''
-        select e.name, count(r.member_id) as 'attending', e.capacity, e.level
+        select e.id, e.name, count(r.member_id) as 'attending', e.capacity, e.level
         from event e
         left join registration r on r.event_id = e.id
         where e.level in ('gold', 'silver', 'bronze')

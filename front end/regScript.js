@@ -265,27 +265,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ==================== INITIALIZE EXAMPLES ====================
+// Variables to track the user's final selection for the POST request
+    let selectedMemberId = null;
+    let selectedEventId = null;
 
-    // 1. Format member options so the label is clean (just the name), 
-    // but the value holds the full string (so we can extract the level)
     const memberOptions = membersData.length
         ? membersData.map(item => {
             if (typeof item === 'string' && item.includes(': ')) {
-                // item looks like: "1: John Doe | details | Mr | gold"
                 const namePart = item.split(': ').slice(1).join(': ');
-                const label = namePart.split(' | ')[0]; // Extracts just "John Doe"
-                return { label: label, value: item };   // Keep full string in value
+                const label = namePart.split(' | ')[0]; 
+                return { label: label, value: item };   
             }
             return { label: item, value: item };
         })
         : [{ label: 'No members available', value: null }];
 
-    // 2. Disable event input initially
     const eventInput = document.getElementById('eventDropdown');
     eventInput.disabled = true;
     eventInput.placeholder = "Select a member first...";
 
-    // 3. Initialize Member Dropdown
+    // Initialize Member Dropdown
     initSearchableDropdown({
         wrapperId: 'searchableDropdown',
         inputId: 'memberDropdown',
@@ -294,27 +293,24 @@ document.addEventListener('DOMContentLoaded', () => {
         data: memberOptions,
         placeholder: 'Search members...',
         
-        // This callback runs when a member is selected
         onSelect: async (value, label) => {
-            const memberId = value.split(':')[0].trim();
+            // Extract and save the member_id for the database
+            selectedMemberId = value.split(':')[0].trim();
             const parts = value.split(' | ');
             const memberLevel = parts[parts.length - 1].trim(); 
 
-            console.log(`Member selected. ID: ${memberId}, Level: ${memberLevel}`);
-
+            // Reset event selection whenever a new member is chosen
+            selectedEventId = null;
             eventInput.disabled = false;
             eventInput.value = "";
             eventInput.placeholder = "Loading available events...";
             document.getElementById('eventSelectedDisplay').innerHTML = 'Selected: <strong>None</strong>';
 
             try {
-                // FETCH SEQUENTIALLY TO PREVENT FLASK/MYSQL CRASH
-                // 1. Get the events for this level
                 const eventsResponse = await fetch(`${apiBase}/event/${memberLevel}`);
                 const eventsData = await eventsResponse.json();
 
-                // 2. Wait for the first to finish, THEN get registered events
-                const registeredResponse = await fetch(`${apiBase}/member/${memberId}/events`);
+                const registeredResponse = await fetch(`${apiBase}/member/${selectedMemberId}/events`);
                 const registeredEvents = await registeredResponse.json();
                 
                 const registeredEventNames = new Set(registeredEvents.map(e => e.name));
@@ -322,25 +318,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 const eventOptions = eventsData.length
                     ? eventsData.map(e => {
                         const isRegistered = registeredEventNames.has(e.name);
-                        
                         const statusText = isRegistered ? ' ✓ (Already Registered)' : '';
                         const displayLabel = `${e.name} — ${e.attending}/${e.capacity} attending${statusText}`;
                         
                         return { 
                             label: displayLabel, 
-                            value: e.name, // (or e.id if you made the crud.py update)
-                            disabled: isRegistered // disables option if member is already registered in an event
+                            // Make sure this matches what your backend expects (e.id or e.name)
+                            value: e.id || e.name, 
+                            disabled: isRegistered 
                         }; 
                     })
                     : [];
 
+                // Initialize Event Dropdown
                 initSearchableDropdown({
                     wrapperId: 'eventDropdownWrapper',
                     inputId: 'eventDropdown',
                     menuId: 'eventMenu',
                     displayId: 'eventSelectedDisplay',
                     data: eventOptions,
-                    placeholder: eventOptions.length ? 'Search events...' : 'No events available for this level'
+                    placeholder: eventOptions.length ? 'Search events...' : 'No events available for this level',
+                    
+                    // ADD THIS: Save the event ID when the user selects an event
+                    onSelect: (val, lbl) => {
+                        selectedEventId = val;
+                    }
                 });
 
                 if (eventOptions.length === 0) {
@@ -353,4 +355,64 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    // ==================== HANDLE SUBMIT ====================
+    const regButton = document.getElementById('reg');
+    const alertContainer = document.getElementById('alertContainer');
+
+    regButton.addEventListener('click', async () => {
+        // 1. Validation Check
+        if (!selectedMemberId || !selectedEventId) {
+            showAlert('danger', 'Please select both a member and an available event before registering.');
+            return;
+        }
+
+        // Disable button to prevent double-clicks
+        regButton.disabled = true;
+        regButton.innerText = "Registering...";
+
+        try {
+            // 2. Make the POST request to Flask
+            const response = await fetch(`${apiBase}/registration`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    member_id: selectedMemberId,
+                    event_id: selectedEventId
+                })
+            });
+
+            if (response.ok) {
+                // 3. Show Success Message
+                showAlert('success', 'Registration successful!');
+                
+                // Optional: Reset the form after success
+                setTimeout(() => {
+                    location.reload(); 
+                }, 2000);
+            } else {
+                const errorData = await response.json();
+                showAlert('danger', `Registration failed: ${errorData.message || 'Unknown error'}`);
+                regButton.disabled = false;
+                regButton.innerText = "Register";
+            }
+        } catch (error) {
+            console.error('Error submitting registration:', error);
+            showAlert('danger', 'A network error occurred. Is the Flask server running?');
+            regButton.disabled = false;
+            regButton.innerText = "Register";
+        }
+    });
+
+    // Helper function to show Bootstrap alerts
+    function showAlert(type, message) {
+        alertContainer.innerHTML = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${escapeHTML(message)}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+    }
 });
