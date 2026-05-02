@@ -50,32 +50,39 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Update Event with Edits
-    document.getElementById('editEventForm').onsubmit = async (e) => {
-        e.preventDefault();
-        
-        const updateEventInfo = {
-            event_id: document.getElementById('editEventId').value,
-            name: document.getElementById('editName').value,
-            capacity: document.getElementById('editMaxCapacity').value, 
-            level: document.getElementById('editLevel').value,
-            date: document.getElementById('editDate').value,
-            // backend requires the current date to check if the new date is valid
-            current_date: new Date().toISOString().split('T')[0] 
-        };
-        
-        const response = await fetch(`${apiBase}/event`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updateEventInfo)
-        });
-
-        window.location.reload();
-    };
-
-    // Function to open View Members Registered Modal
     document.querySelectorAll('.view-event-members-btn').forEach(btn => {
-        btn.onclick = () => {
+        btn.onclick = async () => {
+            const eventId = btn.dataset.id;
+            const tableBody = document.getElementById('eventMembersTableBody');
+            
+            // clears the table (ensures no duplicate members appear) and adds Loading Members when waiting
+            tableBody.innerHTML = '<tr><td colspan="3" class="text-center">Loading members...</td></tr>';
             viewMembersModal.style.display = 'block';
+
+            try {
+                const response = await fetch(`${apiBase}/event/${eventId}/members`);
+                const members = await response.json();
+
+                //  Clears the loading text
+                tableBody.innerHTML = ''; 
+
+                if (members.length > 0) {
+                    members.forEach(member => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${member.name}</td>
+                            <td>${member.title}</td>
+                            <td style="text-transform: capitalize;">${member.level}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="3" class="text-center" style="padding: 20px;">No members are currently registered for this event.</td></tr>';
+                }
+            } catch (error) {
+                console.error("Error fetching registered members:", error);
+                tableBody.innerHTML = '<tr><td colspan="3" class="text-center text-danger" style="padding: 20px;">Error loading members. Check Python server.</td></tr>';
+            }
         };
     });
 
