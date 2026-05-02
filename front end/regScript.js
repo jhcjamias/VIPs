@@ -1,7 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Calls to Flask API
     const apiBase = 'http://localhost:5000';
+
+    // REMOVED the require('./server.js') and console.log lines here
+
     const registrationDataElem = document.getElementById('registration-data');
     let registrationData = { members: [], events: [] };
+
     if (registrationDataElem && registrationDataElem.textContent.trim().length) {
         try {
             registrationData = JSON.parse(registrationDataElem.textContent);
@@ -9,8 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Failed to parse registration data', error);
         }
     }
-    const members = Array.isArray(registrationData.members) ? registrationData.members : [];
-    const events = Array.isArray(registrationData.events) ? registrationData.events : [];
+
+    const membersData = Array.isArray(registrationData.members) ? registrationData.members : [];
+    const eventsData = Array.isArray(registrationData.events) ? registrationData.events : [];
+
+    console.log(membersData);
+    console.log(eventsData);
 
     /**
      * Reusable function to create a searchable dropdown.
@@ -23,23 +32,23 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {string} [config.placeholder]  - Placeholder text
      */
     function initSearchableDropdown({
-        wrapperId,
-        inputId,
-        menuId,
-        displayId,
-        data,
-        placeholder = 'Type to search...'
-    }) {
-        const wrapper = document.getElementById(wrapperId);
-        const input = document.getElementById(inputId);
-        const menu = document.getElementById(menuId);
-        const displayEl = document.getElementById(displayId);
+            wrapperId,
+            inputId,
+            menuId,
+            displayId,
+            data,
+            placeholder = 'Type to search...',
+            onSelect // <-- ADD THIS NEW PARAMETER
+        }) {
+            const wrapper = document.getElementById(wrapperId);
+            const input = document.getElementById(inputId);
+            const menu = document.getElementById(menuId);
+            const displayEl = document.getElementById(displayId);
 
-        let currentIndex = -1; // currently highlighted index (for keyboard nav)
-        let selectedValue = null;
+            let currentIndex = -1; 
+            let selectedValue = null;
 
-        // Set placeholder
-        input.placeholder = placeholder;
+            input.placeholder = placeholder;
 
         // ----- Build dropdown items -----
         function buildItems(filterText = '') {
@@ -89,11 +98,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ----- Select an item -----
         function selectItem(value, label) {
+            if (!value) return; // Prevent selecting null placeholders
+            
             selectedValue = value;
-            input.value = label; // show the label in the input
+            input.value = label; 
             displayEl.innerHTML = 'Selected: <strong>' + escapeHTML(label) + '</strong>';
             closeDropdown();
             input.focus();
+            
+            // <-- ADD THIS: Trigger the callback if one was provided
+            if (onSelect) {
+                onSelect(value, label); 
+            }
         }
 
         // ----- Open dropdown -----
@@ -240,45 +256,79 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // ==================== INITIALIZE EXAMPLES ====================
+// ==================== INITIALIZE EXAMPLES ====================
 
-    const memberOptions = members.length
-        ? members.map(item => {
+    // 1. Format member options so the label is clean (just the name), 
+    // but the value holds the full string (so we can extract the level)
+    const memberOptions = membersData.length
+        ? membersData.map(item => {
             if (typeof item === 'string' && item.includes(': ')) {
-                const value = item.split(': ').slice(1).join(': ');
-                return { label: value, value };
+                // item looks like: "1: John Doe | details | Mr | gold"
+                const namePart = item.split(': ').slice(1).join(': ');
+                const label = namePart.split(' | ')[0]; // Extracts just "John Doe"
+                return { label: label, value: item };   // Keep full string in value
             }
-            return item;
+            return { label: item, value: item };
         })
-        : ['No members available'];
+        : [{ label: 'No members available', value: null }];
 
+    // 2. Disable event input initially
+    const eventInput = document.getElementById('eventDropdown');
+    eventInput.disabled = true;
+    eventInput.placeholder = "Select a member first...";
+
+    // 3. Initialize Member Dropdown
     initSearchableDropdown({
         wrapperId: 'searchableDropdown',
         inputId: 'memberDropdown',
         menuId: 'memberMenu',
         displayId: 'selectedDisplay',
         data: memberOptions,
-        placeholder: 'Search members...'
-    });
+        placeholder: 'Search members...',
+        
+        // This callback runs when a member is selected
+        onSelect: (value, label) => {
+            // "value" holds the raw string from Flask. Let's split it to get the level at the end.
+            const parts = value.split(' | ');
+            const memberLevel = parts[parts.length - 1].trim(); 
 
+            console.log(`Member selected. Level parsed as: ${memberLevel}`);
 
-    // --- Example 2: Events (using label/value objects) ---
-    const eventOptions = events.length
-        ? events.map(item => {
-            if (typeof item === 'string' && item.includes(': ')) {
-                const value = item.split(': ').slice(1).join(': ');
-                return { label: value, value };
-            }
-            return { label: item, value: item };
-        })
-        : [];
+            // Reset and show loading state on the Event dropdown
+            eventInput.disabled = false;
+            eventInput.value = "";
+            eventInput.placeholder = "Loading available events...";
+            document.getElementById('eventSelectedDisplay').innerHTML = 'Selected: <strong>None</strong>';
 
-    initSearchableDropdown({
-        wrapperId: 'eventDropdownWrapper',
-        inputId: 'eventDropdown',
-        menuId: 'eventMenu',
-        displayId: 'eventSelectedDisplay',
-        data: eventOptions,
-        placeholder: 'Search events...'
+            // Fetch the filtered events from crud.py based on memberLevel
+            fetch(`${apiBase}/event/${memberLevel}`)
+                .then(response => response.json())
+                .then(eventsData => {
+                    // Flask returns objects like: { name: '...', attending: ..., level: '...' }
+                    const eventOptions = eventsData.length
+                        ? eventsData.map(e => ({ label: e.name, value: e.name }))
+                        : [];
+
+                    // Initialize the Event Dropdown with the newly fetched data
+                    initSearchableDropdown({
+                        wrapperId: 'eventDropdownWrapper',
+                        inputId: 'eventDropdown',
+                        menuId: 'eventMenu',
+                        displayId: 'eventSelectedDisplay',
+                        data: eventOptions,
+                        placeholder: eventOptions.length ? 'Search events...' : 'No events available for this level'
+                    });
+
+                    // Disable it again if they are gold and no gold events exist, etc.
+                    if (eventOptions.length === 0) {
+                        eventInput.disabled = true;
+                    }
+                })
+                .catch(err => {
+                    console.error("Error fetching events:", err);
+                    eventInput.placeholder = "Error loading events";
+                    eventInput.disabled = true;
+                });
+        }
     });
 });
