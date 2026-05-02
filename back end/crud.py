@@ -184,9 +184,10 @@ def read_members():
     for member in members:
         id = member['id']
         name = member['name']
+        details = member['details'] if member['details'] else ""
         title = member['title']
         level = member['level']
-        line = f'{id}: {name} | {title} | {level}'
+        line = f'{id}: {name} | {details} | {title} | {level}'
         member_list.append(line)
     
     return member_list
@@ -275,7 +276,7 @@ def update_member():
         set title = %s
         where id = %s;
         '''
-        execute_query(conn,query,(new_details,id))
+        execute_query(conn,query,(new_title,id))
 
     #update only the level 
     #if member is registered to an event with a higher tier and the update makes them an invalid member, then an error would show

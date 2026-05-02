@@ -26,9 +26,13 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.onclick = () => {
             document.getElementById('editMemberId').value = btn.dataset.id;
             document.getElementById('editName').value = btn.dataset.name;
-            document.getElementById('editDetails').value = btn.dataset.details;
+
+            // If information is missing in details textbox, it leaves it blank
+            let safeDetails = btn.dataset.details;
+            if (safeDetails === "undefined" || !safeDetails) safeDetails = "";
+            document.getElementById('editDetails').value = safeDetails;
             document.getElementById('editTitle').value = btn.dataset.title;
-            document.getElementById('editLevel').value = btn.dataset.level.trim().toLowerCase();
+            document.getElementById('editLevel').value = (btn.dataset.level || "bronze").trim().toLowerCase();
 
             currentDeleteId = btn.dataset.id;
             editMemberModal.style.display = 'block';

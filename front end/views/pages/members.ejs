@@ -40,10 +40,10 @@
 
                         let dataParts = splitStr[1].split(' | ');
 
-                        let name = dataParts[0] || "";
-                        let details = dataParts[1] || "";
-                        let title = dataParts[2] || "";
-                        let level = dataParts[3] || "";
+                        let name = dataParts[0] ? dataParts[0].trim() : "";
+                        let details = dataParts[1] ? dataParts[1].trim() : ""; 
+                        let title = dataParts[2] ? dataParts[2].trim() : "";   
+                        let level = dataParts[3] ? dataParts[3].trim() : "";   
                     %>
                         <tr>
                             <th scope="row">
