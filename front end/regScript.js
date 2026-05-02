@@ -80,17 +80,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 const li = document.createElement('li');
                 const label = typeof item === 'object' ? item.label : item;
                 const value = typeof item === 'object' ? item.value : item;
+                const isDisabled = typeof item === 'object' ? item.disabled : false; // Check if disabled
 
-                li.innerHTML = `<span class="dropdown-item" data-value="${escapeHTML(value)}" data-label="${escapeHTML(label)}" data-index="${idx}">${escapeHTML(label)}</span>`;
-                menu.appendChild(li);
+                if (isDisabled) {
+                    // Render as disabled: grayed out and no click listener
+                    li.innerHTML = `<span class="dropdown-item disabled" style="color: #adb5bd; cursor: not-allowed; pointer-events: none;" data-value="${escapeHTML(value)}" data-label="${escapeHTML(label)}" data-index="${idx}">${escapeHTML(label)}</span>`;
+                    menu.appendChild(li);
+                } else {
+                    // Render normally with click listener
+                    li.innerHTML = `<span class="dropdown-item" data-value="${escapeHTML(value)}" data-label="${escapeHTML(label)}" data-index="${idx}">${escapeHTML(label)}</span>`;
+                    menu.appendChild(li);
 
-                // Click handler on each item
-                li.querySelector('.dropdown-item').addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    selectItem(value, label);
-                });
+                    // Click handler on each selectable item
+                    li.querySelector('.dropdown-item').addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        selectItem(value, label);
+                    });
+                }
             });
-
             // Reset keyboard index
             currentIndex = -1;
             removeHighlight();
@@ -150,7 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // ----- Keyboard navigation on input -----
         input.addEventListener('keydown', function(e) {
             const isOpen = menu.classList.contains('show');
-            const items = menu.querySelectorAll('.dropdown-item:not(.no-results)');
+            // ADDED :not(.disabled) so the arrow keys skip over disabled options
+            const items = menu.querySelectorAll('.dropdown-item:not(.no-results):not(.disabled)');
 
             switch (e.key) {
                 case 'ArrowDown':
@@ -163,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         highlightItem(currentIndex);
                     }
                     break;
-
+                    
                 case 'ArrowUp':
                     e.preventDefault();
                     if (!isOpen) {
@@ -318,7 +326,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         const statusText = isRegistered ? ' ✓ (Already Registered)' : '';
                         const displayLabel = `${e.name} — ${e.attending}/${e.capacity} attending${statusText}`;
                         
-                        return { label: displayLabel, value: e.name }; 
+                        return { 
+                            label: displayLabel, 
+                            value: e.name, // (or e.id if you made the crud.py update)
+                            disabled: isRegistered // disables option if member is already registered in an event
+                        }; 
                     })
                     : [];
 
