@@ -35,7 +35,6 @@
                 <tbody class="table-group-divider">
                 <% if (members && members.length > 0) { %>
                     <% members.forEach(function(memberStr) { 
-                        // Parse the backend string: "1: Ajay | Patna | bronze"
                         let splitStr = memberStr.split(': ');
                         let id = splitStr[0];
                         let details = splitStr[1].split(' | ');
@@ -180,7 +179,7 @@
 ###################################################%>
 
 <%# Calvin - Added modal pop-up to view member's event registrations %>
-<div id="viewEventModal" class="modal">
+<div id="viewEventsModal" class="modal">
     <div class="modal-content" style="width: 65%;">
         <h3>Registered Events</h3>
         <hr>
