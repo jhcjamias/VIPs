@@ -5,8 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Calls to Flask API
     const apiBase = 'http://localhost:5000';
 
-    // REMOVED the require('./server.js') and console.log lines here
-
     const registrationDataElem = document.getElementById('registration-data');
     let registrationData = { members: [], events: [] };
 
@@ -41,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             displayId,
             data,
             placeholder = 'Type to search...',
-            onSelect // <-- ADD THIS NEW PARAMETER
+            onSelect
         }) {
             const wrapper = document.getElementById(wrapperId);
             const input = document.getElementById(inputId);
@@ -86,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const isDisabled = typeof item === 'object' ? item.disabled : false; // Check if disabled
 
                 if (isDisabled) {
-                    // Render as disabled: grayed out and no click listener
+                    // Render as disabled, so no grayed out and no click listener
                     li.innerHTML = `<span class="dropdown-item disabled" style="color: #adb5bd; cursor: not-allowed; pointer-events: none;" data-value="${escapeHTML(value)}" data-label="${escapeHTML(label)}" data-index="${idx}">${escapeHTML(label)}</span>`;
                     menu.appendChild(li);
                 } else {
@@ -160,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // ----- Keyboard navigation on input -----
         input.addEventListener('keydown', function(e) {
             const isOpen = menu.classList.contains('show');
-            // ADDED :not(.disabled) so the arrow keys skip over disabled options
+            // added not(.disabled) so the arrow keys skip over disabled options
             const items = menu.querySelectorAll('.dropdown-item:not(.no-results):not(.disabled)');
 
             switch (e.key) {
@@ -342,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     data: eventOptions,
                     placeholder: eventOptions.length ? 'Search events...' : 'No events available for this level',
                     
-                    // ADD THIS: Save the event ID when the user selects an event
+                    // Save the event ID when the user selects an event
                     onSelect: (val, lbl) => {
                         selectedEventId = val;
                     }
@@ -375,7 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
         regButton.innerText = "Registering...";
 
         try {
-            // 2. Make the POST request to Flask
+            // Make the POST request to Flask
             const response = await fetch(`${apiBase}/registration`, {
                 method: 'POST',
                 headers: {
@@ -388,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
-                // 3. Show Success Message
+                // Show Success Message
                 showAlert('success', 'Registration successful!');
                 
                 // Optional: Reset the form after success
