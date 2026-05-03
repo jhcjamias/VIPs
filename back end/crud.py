@@ -299,7 +299,7 @@ def get_event_by_lvl(level):
         select e.id, e.name, count(r.member_id) as 'attending', e.capacity, e.level
         from event e
         left join registration r on r.event_id = e.id
-        where e.level = 'gold' or e.level = 'silver'
+        where e.level = 'bronze' or e.level = 'silver'
         group by e.id
         '''
     elif level == 'gold':
