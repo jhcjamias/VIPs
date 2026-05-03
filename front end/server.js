@@ -20,7 +20,7 @@ app.get('/', async (req, res) => {
         const response = await axios.get('http://localhost:5000/members');
         const membersData = response.data;
         
-        res.render('pages/members', { members: membersData });
+        res.render('pages/members', { members: membersData, path: '/' });
     } catch (error) {
         console.error("Error fetching members:", error.message);
         res.render('pages/members', { members: [] });
@@ -33,7 +33,7 @@ app.get('/events', async (req, res) => {
         const response = await axios.get('http://localhost:5000/events');
         const eventsData = response.data;
         
-        res.render('pages/events', { events: eventsData });
+        res.render('pages/events', { events: eventsData, path: '/events' });
     } catch (error) {
         console.error("Error fetching events:", error.message);
         res.render('pages/events', { events: [] });
@@ -47,7 +47,7 @@ app.get('/register', async (req, res) => {
         const membersData = memberResponse.data;
 
         // We pass an empty array for events because regScript.js will fetch them dynamically now
-        res.render('pages/registration', { members: membersData, events: [] });
+        res.render('pages/registration', { members: membersData, events: [], path: '/register'});
         
     } catch (error) {
         console.error("Error fetching registration:", error.message);
