@@ -1,3 +1,6 @@
+
+// Jamie - created entire page
+
 document.addEventListener('DOMContentLoaded', () => {
     // Calls to Flask API
     const apiBase = 'http://localhost:5000';
