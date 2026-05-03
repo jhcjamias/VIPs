@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }  
 
-    // Function for delete confirmation of a single event
+    // Function for delete confirmation of a single event (used for delete button in edit modal)
     const singleDeleteBtn = document.querySelector('.delete-event-btn');
     if (singleDeleteBtn) {
         singleDeleteBtn.onclick = () => {
