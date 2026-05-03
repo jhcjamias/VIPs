@@ -73,13 +73,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Function to open View Member's Registered Events Modal
+    // memberScript.js - updated event listener logic
     document.querySelectorAll('.view-member-events-btn').forEach(btn => {
         btn.onclick = async () => { 
             const memberId = btn.dataset.id;
             const tableBody = document.getElementById('memberEventsTableBody');
 
-            // clears the table (ensures no duplicate events appear) and adds Loading Events when waiting
-            tableBody.innerHTML = '<tr><td colspan="4" class="text-center">Loading events...</td></tr>';
+            // Increased colspan to 5 to match new header count
+            tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Loading events...</td></tr>';
             
             viewEventsModal.style.display = 'block';
 
@@ -87,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`${apiBase}/member/${memberId}/events`);
                 const events = await response.json();
 
-                // Clears the loading text
                 tableBody.innerHTML = ''; 
 
                 if (events.length > 0) {
@@ -95,26 +95,58 @@ document.addEventListener('DOMContentLoaded', () => {
                         const row = document.createElement('tr');
                         const formattedDate = new Date(event.date).toLocaleDateString('en-US', { timeZone: 'UTC' });
 
+                        // Inserted a 5th <td> with error/trash icon button
+                        // 1. Update the row generation inside the view-member-events-btn click handler
+                        // Ensure you include event.id in the dataset
+                        // Inside the view-member-events-btn.onclick loop:
+                        // Safely grab the event ID whether the API calls it 'id' or 'event_id'
+                        const safeEventId = event.id || event.event_id || event.eventId;
+
                         row.innerHTML = `
                             <td>${event.name}</td>
                             <td>${event.capacity}</td>
                             <td style="text-transform: capitalize;">${event.level}</td>
                             <td>${formattedDate}</td>
+                            <td>
+                                <button type="button" class="btn btn-outline-danger btn-sm unregister-btn" 
+                                        data-event-id="${safeEventId}" data-member-id="${memberId}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 640 640" fill="currentColor">
+                                        <path d="M232.7 69.9C237.1 56.8 249.3 48 263.1 48L377 48C390.8 48 403 56.8 407.4 69.9L416 96L512 96C529.7 96 544 110.3 544 128C544 145.7 529.7 160 512 160L128 160C110.3 160 96 145.7 96 128C96 110.3 110.3 96 128 96L224 96L232.7 69.9zM128 208L512 208L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 208zM216 272C202.7 272 192 282.7 192 296L192 488C192 501.3 202.7 512 216 512C229.3 512 240 501.3 240 488L240 296C240 282.7 229.3 272 216 272zM320 272C306.7 272 296 282.7 296 296L296 488C296 501.3 306.7 512 320 512C333.3 512 344 501.3 344 488L344 296C344 282.7 333.3 272 320 272zM424 272C410.7 272 400 282.7 400 296L400 488C400 501.3 410.7 512 424 512C437.3 512 448 501.3 448 488L448 296C448 282.7 437.3 272 424 272z"/>
+                                    </svg>
+                                </button>
+                            </td>
                         `;
+
+                        // 2. Add the Click Listener for the unregister button
+                        document.getElementById('memberEventsTableBody').addEventListener('click', async (e) => {
+                            const btn = e.target.closest('.unregister-btn');
+                            if (!btn) return;
+
+                            const { eventId, memberId } = btn.dataset;
+
+                            if (confirm("Are you sure you want to unregister this member from the event?")) {
+                                await fetch(`${apiBase}/registration`, {
+                                    method: 'DELETE',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ event_id: eventId, member_id: memberId, id: null }) // id included as per your API definition
+                                });
+                                window.location.reload();
+                            }
+                        });
                         tableBody.appendChild(row);
                     });
                 } else {
-                    // Displayed if the member has 0 events
-                    tableBody.innerHTML = '<tr><td colspan="4" class="text-center" style="padding: 20px;">This member is not registered for any events.</td></tr>';
+                    // Updated colspan to 5
+                    tableBody.innerHTML = '<tr><td colspan="5" class="text-center" style="padding: 20px;">This member is not registered for any events.</td></tr>';
                 }
                 
             } catch (error) { 
                 console.error("Error fetching registered events:", error);
-                tableBody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Error loading events.</td></tr>';
+                // Updated colspan to 5
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading events.</td></tr>';
             }
         };
     });
-
 
     // Function to update number selected for delete confirmation and delete from table
     function updateDeleteSelected() {
@@ -196,4 +228,60 @@ document.addEventListener('DOMContentLoaded', () => {
             editMemberModal.style.display = 'none';
         };
     }
+
+    // Use Event Delegation to handle clicks on dynamically created buttons
+    // memberScript.js - Update the property names in the click handler
+    // Use Event Delegation at the bottom of your DOMContentLoaded
+    document.getElementById('memberEventsTableBody').addEventListener('click', async (e) => {
+        // Check for our specific button class
+        const btn = e.target.closest('.unregister-btn');
+        if (!btn) return;
+
+        // Grab the raw strings from the data- attributes
+        const rawEventId = btn.dataset.eventId;
+        const rawMemberId = btn.dataset.memberId;
+
+        // JavaScript Validation Check BEFORE sending to Python
+        if (!rawEventId || rawEventId === 'undefined' || !rawMemberId || rawMemberId === 'undefined') {
+            alert("JavaScript Error: Missing event ID or member ID! Check the console.");
+            console.error("Missing Data:", { eventId: rawEventId, memberId: rawMemberId });
+            return; // Stop the request
+        }
+
+        const eventId = parseInt(rawEventId);
+        const memberId = parseInt(rawMemberId);
+
+        const payload = { 
+            id: null,
+            event_id: eventId, 
+            member_id: memberId 
+        };
+
+        console.log("Sending Valid Payload to Server:", payload);
+
+        if (confirm("Are you sure you want to unregister this member from the event?")) {
+            try {
+                const response = await fetch(`${apiBase}/registration`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                // Catch the 400 error properly and display it
+                if (!response.ok) {
+                    alert("Server Error: " + (result.message || response.status));
+                    return;
+                }
+
+                alert(result.message || "Successfully unregistered.");
+                window.location.reload();
+
+            } catch (error) {
+                console.error("Error during unregistration:", error);
+                alert("Failed to unregister due to a network or code error.");
+            }
+        }
+    });
 });

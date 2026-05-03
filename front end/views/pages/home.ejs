@@ -1,0 +1,206 @@
+
+<%# Jamie - Created entire page %>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head'); %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        /* 1. Prevent Scrolling & Reset Body Padding for Backgrounds */
+        body {
+            margin: 2.0rem 4.0rem;
+            padding: 0 !important; /* Overrides head.ejs padding so background goes edge-to-edge */
+            height: 100vh;
+            overflow: hidden; /* STRICT NO-SCROLL */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* 2. Re-apply Exact Padding to Header to Match Other Pages */
+        /*
+        header {
+            padding: 2.0rem 4.0rem !important;
+            position: absolute; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 1020;
+        } */
+
+        /* 3. Background and Light VIP Aesthetic */
+        .vip-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1920') no-repeat center center/cover;
+            z-index: -2;
+        }
+
+        .vip-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(240, 244, 248, 0.95) 100%);
+            backdrop-filter: blur(8px);
+            z-index: -1;
+        }
+
+        /* 4. Main Content Layout - Dead Center of the Screen */
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Mathematically centers the element */
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 0 2rem;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        /* Light Glassmorphism Card for the content */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 900px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); 
+            color: #0f172a; 
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        /* 5. Typography & Elements */
+        .brand-section {
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+            padding-right: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand-logo {
+            font-size: 3rem;
+            color: #b48608; 
+            margin-bottom: 1rem;
+        }
+
+        .brand-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            color: #0f172a;
+        }
+
+        .brand-subtitle {
+            color: #475569; 
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .fact-item, .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .fact-item i, .contact-item i {
+            font-size: 1.5rem;
+            color: #b48608;
+            margin-right: 1rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        .fact-text {
+            font-size: 0.95rem;
+            color: #334155;
+        }
+
+        hr.divider {
+            border-color: rgba(0, 0, 0, 0.1);
+            margin: 1.5rem 0;
+        }
+
+        .contact-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #64748b;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<header>
+    <%- include('../partials/navbar'); %>
+</header>
+
+<body>
+    <div class="vip-background"></div>
+    <div class="vip-overlay"></div>
+
+
+
+    <div class="hero-content">
+        <div class="glass-card">
+            <div class="brand-section">
+                <div class="brand-logo">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <h1 class="brand-title">VIP <br><strong>ORGANIZATION</strong></h1>
+                <p class="brand-subtitle">
+                    Welcome to the Employee Management Portal. Use the navigation menu above to manage VIP members, oversee exclusive events, and handle guest registrations.
+                </p>
+            </div>
+
+            <div class="info-section">
+                <div class="fact-item">
+                    <i class="bi bi-people"></i>
+                    <span class="fact-text">Managing <strong>5,000+</strong> Active VIP Members</span>
+                </div>
+                <div class="fact-item">
+                    <i class="bi bi-globe"></i>
+                    <span class="fact-text">Overseeing <strong>120+</strong> Annual Global Events</span>
+                </div>
+                <div class="fact-item">
+                    <i class="bi bi-check2-circle"></i>
+                    <span class="fact-text">Seamless Registration & Roster Management</span>
+                </div>
+
+                <hr class="divider">
+
+                <h3 class="contact-title">Internal IT & Support</h3>
+                <div class="contact-item">
+                    <i class="bi bi-envelope"></i>
+                    <span class="fact-text">support@aura-vip.internal</span>
+                </div>
+                <div class="contact-item">
+                    <i class="bi bi-telephone"></i>
+                    <span class="fact-text">Ext. 4099 | (555) 019-8372</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

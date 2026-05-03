@@ -536,17 +536,26 @@ def delete_event():
     return jsonify({'message': 'Event deleted successfully'})
 
 
-@app.route('/registration',methods=["DELETE"])
+@app.route('/registration', methods=["DELETE"])
 def delete_registration():
     request_data = request.get_json()
-    registration_id = request_data['id']
+    
+    # 1. Print the incoming data to the Python terminal so you can see what JS is sending
+    print("RECEIVED DELETE PAYLOAD:", request_data) 
 
-    #SQL statement query to delete registration from registration table
-    registration_query = "DELETE FROM registration WHERE id = %s"
+    # 2. Use .get() to safely extract variables without crashing
+    event_id = request_data.get('event_id')
+    member_id = request_data.get('member_id')
 
-    execute_query(conn, registration_query, (registration_id,))
+    # 3. Guard clause to catch missing data
+    if event_id is None or member_id is None:
+        return jsonify({'message': 'Error: event_id or member_id is missing from request'}), 400
 
-    return jsonify({'message': 'Registration deleted successfully'}) 
+    # SQL statement query to delete registration from registration table
+    registration_query = "DELETE FROM registration WHERE event_id = %s AND member_id = %s"
+    execute_query(conn, registration_query, (event_id, member_id,))
+
+    return jsonify({'message': 'Registration deleted successfully'})
 
 
 app.run()
