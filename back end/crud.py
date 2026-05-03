@@ -250,7 +250,7 @@ def read_registration():
 def get_member_events(member_id):
     # query to find all events registered for a specific member
     query = '''
-        SELECT e.name, e.capacity, e.level, e.date 
+        SELECT e.id, e.name, e.capacity, e.level, e.date 
         FROM registration r
         JOIN event e ON r.event_id = e.id
         WHERE r.member_id = %s
@@ -269,7 +269,7 @@ def get_member_events(member_id):
 def get_event_members(event_id):
     # query to find all members who have registered for a specific event
     query = '''
-        SELECT m.name, m.title, m.level 
+        SELECT m.id, m.name, m.title, m.level 
         FROM registration r
         JOIN member m ON r.member_id = m.id
         WHERE r.event_id = %s

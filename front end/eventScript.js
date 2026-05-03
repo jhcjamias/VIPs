@@ -175,4 +175,42 @@ document.addEventListener('DOMContentLoaded', () => {
             editEventModal.style.display = 'none';
         };
     }
+
+    // Function to unregister member from event
+    document.getElementById('eventMembersTableBody').addEventListener('click', async (e) => {
+        // Look for the specific trash can button you created
+        const btn = e.target.closest('.remove-member-btn');
+        if (!btn) return;
+
+        // grabs the IDs of event and member from Flask API
+        const eventId = parseInt(btn.dataset.eventId);
+        const memberId = parseInt(btn.dataset.memberId);
+
+        if (confirm("Are you sure you want to unregister this member from the event?")) {
+            try {
+                const response = await fetch(`${apiBase}/registration`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        event_id: eventId, 
+                        member_id: memberId, 
+                        id: null 
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    alert("Server Error: " + (result.message || response.status));
+                    return;
+                }
+
+                window.location.reload();
+
+            } catch (error) {
+                console.error("Error during unregistration:", error);
+                alert("Failed to unregister due to a network or code error.");
+            }
+        }
+    });
 });
