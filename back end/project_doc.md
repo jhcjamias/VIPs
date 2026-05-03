@@ -58,3 +58,10 @@ Both:
  - debugged code errors found
  - worked on events page and functionalities (re-use some functionalities from members)
  - worked on script of how to demonstrate webpage for video
+
+
+Explanation of Code
+ https://www.youtube.com/watch?v=dz4VdJa6B5Q 
+
+Live Demo
+https://youtu.be/m5AjYN3j8gA 
